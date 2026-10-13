@@ -2,5 +2,6 @@ name = "iraq-customs"
 compatibility_date = "2026-10-13"
 pages_build_output_dir = "."
 
-# The original deployment's KV bindings and server-side code were not recovered.
-# Configure verified backend bindings in Cloudflare only when restoring that backend.
+# Restored static frontend only.
+# The original CUSTOMS_KV binding/Pages Functions are not copied here:
+# historical financial records and security credentials remain on Cloudflare.
