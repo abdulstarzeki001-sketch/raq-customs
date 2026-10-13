@@ -1,0 +1,630 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>التجار وكشوف الحساب</title>
+  <link rel="icon" href="./images/site-mark.svg">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/traders-redesign.css">
+</head>
+<body>
+  <div class="traders-page-wrap" id="tradersPage">
+    <!-- Header -->
+    <header class="app-header screen-only">
+      <div class="container">
+        <div class="header-brand">
+          <div class="brand-icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark"><line x1="3" x2="21" y1="22" y2="22"></line><line x1="6" x2="6" y1="18" y2="11"></line><line x1="10" x2="10" y1="18" y2="11"></line><line x1="14" x2="14" y1="18" y2="11"></line><line x1="18" x2="18" y1="18" y2="11"></line><polygon points="12 2 20 7 4 7 12 2"></polygon></svg>
+          </div>
+          <div>
+            <h1>صفحة التجار وكشوف الحساب</h1>
+            <p>نظام إدارة الوثائق - الهيئة العامة للجمارك العراقية</p>
+          </div>
+        </div>
+        <div class="header-nav">
+          <a href="./index.html" class="nav-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            بحث الشركات
+          </a>
+          <a href="./document.html" class="nav-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>
+            آخر وثيقة
+          </a>
+          <a href="./form.html" class="nav-btn nav-btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+            إدخال وثيقة جديدة
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <!-- Status Messages -->
+      <div class="status success" id="status" style="display: block;">
+        <span id="statusMessage">تم تحميل 839 شركة</span>
+      </div>
+
+      <div class="sidebar lg:w-1/3 xl:w-1/4">
+        <!-- Traders Accounts Card -->
+        <section class="card trader-accounts-card">
+          <div class="card-header pb-3">
+            <h2 class="card-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" x2="19" y1="8" y2="14"></line><line x1="22" x2="16" y1="11" y2="11"></line></svg>
+              حسابات التجار
+            </h2>
+            <p class="card-description">أضف التاجر مرة واحدة، وبعدها أي وثيقة تُسجل باسمه ستدخل تلقائيًا في كشف حسابه.</p>
+          </div>
+          <div class="card-content">
+            <form id="traderForm" class="flex gap-2 mb-4">
+              <input id="traderName" placeholder="اسم التاجر...">
+              <button type="submit" class="btn btn-brand shrink-0">إضافة تاجر</button>
+            </form>
+            <div id="tradersAccountsList" class="space-y-1">
+          <div class="trader-card">
+            <div>
+              <div class="trader-card-name">استس</div>
+              <div class="trader-card-meta">
+                2 وثيقة — وثائق 30.00 $ — قبض/تسديد 0.00 $ — متبقي 30.00 $
+              </div>
+            </div>
+            <div class="trader-card-actions">
+              <button type="button" class="mini-btn" data-filter-trader="استس">كشف الحساب</button>
+              <button type="button" class="mini-btn success" data-payment-trader="استس">قبض / تسديد</button>
+              <button type="button" class="mini-btn print" data-print-trader="استس">طباعة</button>
+              <button type="button" class="mini-btn danger" data-delete-trader="استس">حذف</button>
+            </div>
+          </div>
+        
+          <div class="trader-card">
+            <div>
+              <div class="trader-card-name">ععع</div>
+              <div class="trader-card-meta">
+                0 وثيقة — وثائق 0.00 $ — قبض/تسديد 0.00 $ — متبقي 0.00 $
+              </div>
+            </div>
+            <div class="trader-card-actions">
+              <button type="button" class="mini-btn" data-filter-trader="ععع">كشف الحساب</button>
+              <button type="button" class="mini-btn success" data-payment-trader="ععع">قبض / تسديد</button>
+              <button type="button" class="mini-btn print" data-print-trader="ععع">طباعة</button>
+              <button type="button" class="mini-btn danger" data-delete-trader="ععع">حذف</button>
+            </div>
+          </div>
+        
+          <div class="trader-card">
+            <div>
+              <div class="trader-card-name">G</div>
+              <div class="trader-card-meta">
+                1 وثيقة — وثائق 288.00 $ — قبض/تسديد 0.00 $ — متبقي 288.00 $
+              </div>
+            </div>
+            <div class="trader-card-actions">
+              <button type="button" class="mini-btn" data-filter-trader="G">كشف الحساب</button>
+              <button type="button" class="mini-btn success" data-payment-trader="G">قبض / تسديد</button>
+              <button type="button" class="mini-btn print" data-print-trader="G">طباعة</button>
+              <button type="button" class="mini-btn danger" data-delete-trader="G">حذف</button>
+            </div>
+          </div>
+        
+          <div class="trader-card">
+            <div>
+              <div class="trader-card-name">Said</div>
+              <div class="trader-card-meta">
+                0 وثيقة — وثائق 0.00 $ — قبض/تسديد 100.00 $ — متبقي -100.00 $
+              </div>
+            </div>
+            <div class="trader-card-actions">
+              <button type="button" class="mini-btn" data-filter-trader="Said">كشف الحساب</button>
+              <button type="button" class="mini-btn success" data-payment-trader="Said">قبض / تسديد</button>
+              <button type="button" class="mini-btn print" data-print-trader="Said">طباعة</button>
+              <button type="button" class="mini-btn danger" data-delete-trader="Said">حذف</button>
+            </div>
+          </div>
+        </div>
+          </div>
+        </section>
+
+        <!-- Payment Form Card -->
+        <section class="card">
+          <div class="card-header pb-3 bg-slate-50/50">
+            <h2 class="card-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+              تسجيل قبض / تسديد
+            </h2>
+            <p class="card-description">استخدم هذه الحركة لتقليل الرصيد المستحق على التاجر. ستظهر في الكشف كحركة دائنة.</p>
+          </div>
+          <div class="card-content pt-4">
+            <form id="paymentForm" class="space-y-3">
+              <div class="input-group">
+                <label class="input-label">اختر التاجر</label>
+                <select id="paymentTraderName"><option value="">اختر التاجر</option><option value="استس">استس</option><option value="ععع">ععع</option><option value="G">G</option><option value="Said">Said</option></select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">نوع الحركة</label>
+                <select id="paymentType">
+                  <option value="receipt">قبض من التاجر</option>
+                  <option value="settlement">تسديد / تسوية</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">المبلغ بالدولار</label>
+                <input id="paymentAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="مثال: 1,500.00">
+              </div>
+              <div class="input-group">
+                <label class="input-label">تاريخ الحركة</label>
+                <input id="paymentDate" type="date">
+              </div>
+              <div class="input-group">
+                <label class="input-label">رقم مرجع أو وصول اختياري</label>
+                <input id="paymentReference" placeholder="مثال: وصل رقم 1234">
+              </div>
+              <div class="input-group">
+                <label class="input-label">ملاحظات الحركة</label>
+                <textarea id="paymentNotes" placeholder="أضف تفاصيل إضافية هنا..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-brand btn-full">حفظ الحركة</button>
+            </form>
+          </div>
+        </section>
+      </div>
+
+      <main class="content-area lg:w-2/3 xl:w-3/4">
+        <!-- Toolbar -->
+        <section class="card toolbar-card screen-only">
+          <div class="toolbar-inner">
+            <div class="filter-group">
+              <select id="traderFilter" class="bg-slate-50"><option value="">كل التجار</option><option value="استس">استس</option><option value="ععع">ععع</option><option value="G">G</option><option value="Said">Said</option></select>
+              <select id="companyFilter" class="bg-slate-50"><option value="">كل الشركات</option><option value="ازادي">ازادي</option><option value="معمل التون باش لانتاج وتعبئة مواد المنظفات">معمل التون باش لانتاج وتعبئة مواد المنظفات</option></select>
+            </div>
+            <div class="flex gap-2">
+              <button type="button" class="btn btn-outline h-9" id="printLedgerBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-printer"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect width="12" height="8" x="6" y="14"></rect></svg>
+                طباعة / PDF
+              </button>
+              <button type="button" class="btn btn-danger-outline h-9" id="clearLedgerBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
+                مسح القيود
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Current Trader Summary Card -->
+        <section class="card summary-card">
+          <div class="summary-card-bg-circle"></div>
+          <div class="card-content summary-content">
+            <div class="summary-text">
+              <h2 id="currentTraderTitle">كشف عام لكل التجار</h2>
+              <p id="currentTraderDesc">الكشف الحالي يعرض جميع التجار — إجمالي الوثائق 318.00 $ — إجمالي الحركات الدائنة 100.00 $ — الرصيد المتبقي 218.00 $</p>
+            </div>
+            <div class="summary-stats">
+              <div class="summary-pill">
+                <div class="summary-pill-label text-white/70 mb-1">إجمالي الوثائق</div>
+                <div id="summaryDocsValue" class="summary-pill-value">318.00 $</div>
+              </div>
+              <div class="summary-pill">
+                <div class="summary-pill-label text-white/70 mb-1">إجمالي الحركات الدائنة</div>
+                <div id="summaryPaymentsValue" class="summary-pill-value">100.00 $</div>
+              </div>
+              <div class="summary-pill summary-pill-highlight shadow-inner">
+                <div class="summary-pill-label text-white/90 mb-1 font-medium">الرصيد المتبقي</div>
+                <div id="summaryBalanceValue" class="summary-pill-value text-emerald-300">218.00 $</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Stats Row -->
+        <div class="stats-grid">
+          <section class="card">
+            <div class="stat-box">
+              <div class="stat-icon blue">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>
+              </div>
+              <div class="stat-info">
+                <div class="stat-label">عدد القيود</div>
+                <div id="ledgerTotalEntries" class="stat-value">4</div>
+              </div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="stat-box">
+              <div class="stat-icon indigo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark"><line x1="3" x2="21" y1="22" y2="22"></line><line x1="6" x2="6" y1="18" y2="11"></line><line x1="10" x2="10" y1="18" y2="11"></line><line x1="14" x2="14" y1="18" y2="11"></line><line x1="18" x2="18" y1="18" y2="11"></line><polygon points="12 2 20 7 4 7 12 2"></polygon></svg>
+              </div>
+              <div class="stat-info">
+                <div class="stat-label">إجمالي الوثائق</div>
+                <div id="ledgerTotalDocs" class="stat-value">318.00 $</div>
+              </div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="stat-box">
+              <div class="stat-icon emerald">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-right"><path d="m7 7 10 10"></path><path d="M17 7v10H7"></path></svg>
+              </div>
+              <div class="stat-info">
+                <div class="stat-label">إجمالي القبض/التسديد</div>
+                <div id="ledgerTotalPayments" class="stat-value">100.00 $</div>
+              </div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="stat-box">
+              <div class="stat-icon amber">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+              </div>
+              <div class="stat-info">
+                <div class="stat-label">الرصيد المتبقي</div>
+                <div id="ledgerRemainingBalance" class="stat-value">218.00 $</div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Ledger Table Card -->
+        <section class="card overflow-hidden">
+          <div class="print-header" id="printHeader">
+          <h1>كشف عام لكل التجار</h1>
+          <p>الكشف الحالي يعرض جميع التجار — إجمالي الوثائق 318.00 $ — إجمالي الحركات الدائنة 100.00 $ — الرصيد المتبقي 218.00 $</p>
+          <p>تاريخ الطباعة: ١٣‏/١٠‏/٢٠٢٦، ٩:٠٥:٤٣ ص</p>
+        </div>
+          <div class="ledger-table-wrapper">
+            <table>
+              <thead class="bg-slate-100/50">
+                <tr>
+                  <th>#</th>
+                  <th>التاريخ</th>
+                  <th>نوع القيد</th>
+                  <th>رقم الوثيقة / المرجع</th>
+                  <th>التاجر</th>
+                  <th>اسم السائق</th>
+                  <th>الوجهة النهائية</th>
+                  <th>اسم الشركة</th>
+                  <th class="text-left" style="color: #dc2626;">مدين $</th>
+                  <th class="text-left" style="color: #059669;">دائن $</th>
+                  <th class="text-left bg-slate-50/50">الرصيد $</th>
+                  <th class="text-center screen-only">إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="traderLedgerBody">
+          <tr>
+            <td>1</td>
+            <td>2026-07-14</td>
+            <td><span class="row-type-badge payment">قبض من التاجر</span></td>
+            <td>12</td>
+            <td>Said</td>
+            <td>—</td>
+            <td>Jh</td>
+            <td>—</td>
+            <td class="amount-positive">—</td>
+            <td class="amount-negative">100.00 $</td>
+            <td class="balance-cell">-100.00 $</td>
+            <td class="screen-only"><button type="button" class="mini-btn danger" data-delete-payment="pay_1784029790113_xl87nj">حذف الحركة</button></td>
+          </tr>
+        
+          <tr>
+            <td>2</td>
+            <td>2026-10-03</td>
+            <td><span class="row-type-badge document">وثيقة</span></td>
+            <td>884506</td>
+            <td>G</td>
+            <td>عمر رمضان</td>
+            <td>بغداد</td>
+            <td>معمل التون باش لانتاج وتعبئة مواد المنظفات</td>
+            <td class="amount-positive">288.00 $</td>
+            <td class="amount-negative">—</td>
+            <td class="balance-cell">188.00 $</td>
+            <td class="screen-only"><span>—</span></td>
+          </tr>
+        
+          <tr>
+            <td>3</td>
+            <td>2026-10-03</td>
+            <td><span class="row-type-badge document">وثيقة</span></td>
+            <td>651490</td>
+            <td>استس</td>
+            <td>عمر عادل يوسف</td>
+            <td>نينوى</td>
+            <td>معمل التون باش لانتاج وتعبئة مواد المنظفات</td>
+            <td class="amount-positive">5.00 $</td>
+            <td class="amount-negative">—</td>
+            <td class="balance-cell">193.00 $</td>
+            <td class="screen-only"><span>—</span></td>
+          </tr>
+        
+          <tr>
+            <td>4</td>
+            <td>2026-10-05</td>
+            <td><span class="row-type-badge document">وثيقة</span></td>
+            <td>887526</td>
+            <td>استس</td>
+            <td>عمر عادل يوسف</td>
+            <td>البصرة</td>
+            <td>ازادي</td>
+            <td class="amount-positive">25.00 $</td>
+            <td class="amount-negative">—</td>
+            <td class="balance-cell">218.00 $</td>
+            <td class="screen-only"><span>—</span></td>
+          </tr>
+        </tbody>
+            </table>
+            <div class="empty-ledger" id="ledgerEmptyState" style="display: none;">لا توجد قيود مطابقة حاليًا.</div>
+          </div>
+
+          <div class="mobile-ledger-cards" id="mobileLedgerCards"><article class="ledger-mobile-card">
+            <div class="ledger-mobile-top">
+              <div class="ledger-mobile-index">#1</div>
+              <div><span class="row-type-badge payment">قبض من التاجر</span></div>
+            </div>
+            <div class="ledger-mobile-grid">
+              <div class="ledger-mobile-item">
+                <span>التاريخ</span>
+                <strong>2026-07-14</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>المرجع</span>
+                <strong>12</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>التاجر</span>
+                <strong>Said</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>الشركة</span>
+                <strong>—</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>مدين $</span>
+                <strong class="amount-positive">—</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>دائن $</span>
+                <strong class="amount-negative">100.00 $</strong>
+              </div>
+              <div class="ledger-mobile-item full balance-cell">
+                <span>الرصيد المتبقي $</span>
+                <strong>-100.00 $</strong>
+              </div>
+              <div class="ledger-mobile-item full screen-only">
+                <button type="button" class="mini-btn danger" data-delete-payment="pay_1784029790113_xl87nj">حذف الحركة</button>
+              </div>
+            </div>
+          </article><article class="ledger-mobile-card">
+            <div class="ledger-mobile-top">
+              <div class="ledger-mobile-index">#2</div>
+              <div><span class="row-type-badge document">وثيقة</span></div>
+            </div>
+            <div class="ledger-mobile-grid">
+              <div class="ledger-mobile-item">
+                <span>التاريخ</span>
+                <strong>2026-10-03</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>المرجع</span>
+                <strong>884506</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>التاجر</span>
+                <strong>G</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>الشركة</span>
+                <strong>معمل التون باش لانتاج وتعبئة مواد المنظفات</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>مدين $</span>
+                <strong class="amount-positive">288.00 $</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>دائن $</span>
+                <strong class="amount-negative">—</strong>
+              </div>
+              <div class="ledger-mobile-item full balance-cell">
+                <span>الرصيد المتبقي $</span>
+                <strong>188.00 $</strong>
+              </div>
+              <div class="ledger-mobile-item full screen-only">
+                <span>—</span>
+              </div>
+            </div>
+          </article><article class="ledger-mobile-card">
+            <div class="ledger-mobile-top">
+              <div class="ledger-mobile-index">#3</div>
+              <div><span class="row-type-badge document">وثيقة</span></div>
+            </div>
+            <div class="ledger-mobile-grid">
+              <div class="ledger-mobile-item">
+                <span>التاريخ</span>
+                <strong>2026-10-03</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>المرجع</span>
+                <strong>651490</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>التاجر</span>
+                <strong>استس</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>الشركة</span>
+                <strong>معمل التون باش لانتاج وتعبئة مواد المنظفات</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>مدين $</span>
+                <strong class="amount-positive">5.00 $</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>دائن $</span>
+                <strong class="amount-negative">—</strong>
+              </div>
+              <div class="ledger-mobile-item full balance-cell">
+                <span>الرصيد المتبقي $</span>
+                <strong>193.00 $</strong>
+              </div>
+              <div class="ledger-mobile-item full screen-only">
+                <span>—</span>
+              </div>
+            </div>
+          </article><article class="ledger-mobile-card">
+            <div class="ledger-mobile-top">
+              <div class="ledger-mobile-index">#4</div>
+              <div><span class="row-type-badge document">وثيقة</span></div>
+            </div>
+            <div class="ledger-mobile-grid">
+              <div class="ledger-mobile-item">
+                <span>التاريخ</span>
+                <strong>2026-10-05</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>المرجع</span>
+                <strong>887526</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>التاجر</span>
+                <strong>استس</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>الشركة</span>
+                <strong>ازادي</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>مدين $</span>
+                <strong class="amount-positive">25.00 $</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>دائن $</span>
+                <strong class="amount-negative">—</strong>
+              </div>
+              <div class="ledger-mobile-item full balance-cell">
+                <span>الرصيد المتبقي $</span>
+                <strong>218.00 $</strong>
+              </div>
+              <div class="ledger-mobile-item full screen-only">
+                <span>—</span>
+              </div>
+            </div>
+          </article></div>
+        </section>
+
+        <!-- Note Box -->
+        <div class="note-box screen-only">
+          الطباعة تتم من المتصفح نفسه. بعد الضغط على <strong>طباعة / PDF</strong> اختر <strong>Save as PDF</strong> أو <strong>Microsoft Print to PDF</strong> حتى تحصل على ملف PDF جاهز.
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="./js/core.js"></script>
+  <script src="./js/storage.js"></script>
+  <script src="./js/sync.js"></script>
+  <script src="./js/companies.js"></script>
+  <script src="./js/traders-page.js"></script>
+  <script src="./js/accounting-guard.js"></script>
+<script src="./js/app.js"></script>
+  
+  <script>
+    (function () {
+      const tableBody = document.getElementById("traderLedgerBody");
+      const mobileCards = document.getElementById("mobileLedgerCards");
+      const emptyState = document.getElementById("ledgerEmptyState");
+
+      if (!tableBody || !mobileCards) return;
+
+      function textOf(cell) {
+        return (cell?.innerText || cell?.textContent || "").trim();
+      }
+
+      function buildMobileCards() {
+        const rows = Array.from(tableBody.querySelectorAll("tr")).filter(
+          (row) => !row.hasAttribute("hidden") && row.style.display !== "none"
+        );
+
+        mobileCards.innerHTML = "";
+
+        if (!rows.length) {
+          mobileCards.innerHTML = '<div class="empty-ledger">لا توجد قيود مطابقة حاليًا.</div>';
+          if (emptyState) emptyState.style.display = "block";
+          return;
+        }
+
+        if (emptyState) emptyState.style.display = "none";
+
+        rows.forEach((row) => {
+          const cells = row.querySelectorAll("td");
+          if (cells.length < 11) return;
+
+          const index = textOf(cells[0]);
+          const date = textOf(cells[1]);
+          const typeHtml = cells[2]?.innerHTML || "";
+          const reference = textOf(cells[3]);
+          const trader = textOf(cells[4]);
+          const driver = textOf(cells[5]);
+          const destination = textOf(cells[6]);
+          const company = textOf(cells[7]);
+          const debit = textOf(cells[8]);
+          const credit = textOf(cells[9]);
+          const balance = textOf(cells[10]);
+          const actionHtml = cells[11]?.innerHTML || "";
+
+          const card = document.createElement("article");
+          card.className = "ledger-mobile-card";
+          card.innerHTML = `
+            <div class="ledger-mobile-top">
+              <div class="ledger-mobile-index">#${index}</div>
+              <div>${typeHtml}</div>
+            </div>
+            <div class="ledger-mobile-grid">
+              <div class="ledger-mobile-item">
+                <span>التاريخ</span>
+                <strong>${date || "-"}</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>المرجع</span>
+                <strong>${reference || "-"}</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>التاجر</span>
+                <strong>${trader || "-"}</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>الشركة</span>
+                <strong>${company || "-"}</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>مدين $</span>
+                <strong class="amount-positive">${debit || "-"}</strong>
+              </div>
+              <div class="ledger-mobile-item">
+                <span>دائن $</span>
+                <strong class="amount-negative">${credit || "-"}</strong>
+              </div>
+              <div class="ledger-mobile-item full balance-cell">
+                <span>الرصيد المتبقي $</span>
+                <strong>${balance || "-"}</strong>
+              </div>
+              <div class="ledger-mobile-item full screen-only">
+                ${actionHtml}
+              </div>
+            </div>
+          `;
+          mobileCards.appendChild(card);
+        });
+      }
+
+      const observer = new MutationObserver(() => {
+        buildMobileCards();
+      });
+
+      observer.observe(tableBody, { childList: true, subtree: true });
+      window.addEventListener("load", buildMobileCards);
+      
+      // Initial build
+      buildMobileCards();
+    })();
+  </script>
+
+
+</body></html>
