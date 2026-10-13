@@ -93,10 +93,23 @@ function renderDrivers(){
 }
 function render(){renderDatalists();renderHome();renderCompanies();renderDocuments();renderLedger();renderDrivers();renderTrash();}
 function formValues(form){return Object.fromEntries(new FormData(form).entries());}
+function readQrImage(file){
+ if(!file)return Promise.resolve("");
+ if(!["image/png","image/jpeg","image/webp"].includes(file.type)||file.size>200000) return Promise.reject(Error("يجب أن تكون صورة QR من نوع PNG أو JPG أو WebP وبحجم لا يزيد عن 200KB."));
+ return new Promise((resolve,reject)=>{
+  const reader=new FileReader();
+  reader.onload=()=>resolve(String(reader.result||""));
+  reader.onerror=()=>reject(Error("تعذر قراءة صورة QR"));
+  reader.readAsDataURL(file);
+ });
+}
 function registerForms(){
- byId("documentForm").addEventListener("submit",ev=>{
+ byId("documentForm").addEventListener("submit",async ev=>{
   ev.preventDefault();const form=ev.currentTarget;
-  const record=saveChange(()=>addDocument(db,formValues(form),uniqueId()));
+  const values=formValues(form);
+  try {values.qrImage=await readQrImage(form.elements.qrFile.files?.[0]);}
+  catch(e){notice(e.message,true);return;}
+  const record=saveChange(()=>addDocument(db,values,uniqueId()));
   if(record){form.reset();form.elements.date.value=stamp();form.elements.amount.value="0";notice("تم تسجيل الوثيقة في السجل الجديد");}
  });
  byId("receiptForm").addEventListener("submit",ev=>{
@@ -128,15 +141,18 @@ function registerForms(){
   if(d&&!form.elements.plate.value)form.elements.plate.value=d.plate;
  });
 }
-function printable(title,sub,heads,rows){
-  byId("printArea").innerHTML='<div class="print-sheet"><h1>'+esc(title)+'</h1><p>'+esc(sub)+'</p><hr>'+rowTable(heads,rows)+"<p>تاريخ الطباعة: "+esc(new Date().toLocaleString("ar-IQ"))+"</p><small>سجل خاص بالشركة وليس وثيقة صادرة عن جهة حكومية.</small></div>";
-  window.print();
+function printable(title,sub,heads,rows,qrImage=""){
+  const qr=/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(qrImage) && qrImage.length<280000 ? '<p><img alt="رمز QR مرفق" style="max-width:150px;max-height:150px" src="'+esc(qrImage)+'"></p>' : "";
+  byId("printArea").innerHTML='<div class="print-sheet"><h1>'+esc(title)+'</h1><p>'+esc(sub)+'</p><hr>'+rowTable(heads,rows)+qr+"<p>تاريخ الطباعة: "+esc(new Date().toLocaleString("ar-IQ"))+"</p><small>سجل خاص بالشركة وليس وثيقة صادرة عن جهة حكومية.</small></div>";
+  const image=byId("printArea").querySelector("img");
+  if(image&&image.decode){image.decode().catch(()=>{}).finally(()=>window.print());}
+  else window.print();
 }
 function printDoc(id){
  const x=db.documents.find(d=>d.id===id);if(!x)return;
  printable("وثيقة حمولة داخلية","رقم الوثيقة: "+x.number,["الحقل","البيان"],[
   ["رقم الوثيقة",x.number],["التاريخ",x.date],["الشركة",x.company],["التاجر",x.trader],["السائق",x.driver],["السيارة",x.plate],["الوجهة",x.destination],["الحمولة",x.cargo],["المبلغ",money(x.amount)]
- ].map(pair=>"<tr>"+cell(pair[0])+cell(pair[1])+"</tr>"));
+ ].map(pair=>"<tr>"+cell(pair[0])+cell(pair[1])+"</tr>"),x.qrImage||"");
 }
 function handleAction(action,id){
  const kind=action.includes("receipt")?"receipts":"documents";
