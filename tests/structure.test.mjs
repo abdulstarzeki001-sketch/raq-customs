@@ -37,3 +37,12 @@ test("financial deletion guard is installed on ledger page",()=>{
   assert.match(text("traders.html"),/js\/accounting-guard\.js/);
   assert.match(text("js/accounting-guard.js"),/restoreTraderPayment/);
 });
+
+test("document image export library is bundled locally", () => {
+  const html=text("document.html");
+  assert.match(html, /src="\.\/js\/vendor\/html2canvas\.min\.js"/);
+  assert.doesNotMatch(html, /cdnjs\.cloudflare\.com/);
+  const source=text("js/vendor/html2canvas.min.js");
+  assert.match(source, /html2canvas 1\.4\.1/);
+  assert.ok(source.length > 180000);
+});
