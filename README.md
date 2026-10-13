@@ -41,3 +41,10 @@ python3 -m http.server 8080
 - تشغيل اختبارات GitHub Actions في كل رفع لفرع `main`.
 
 **مهم:** الحماية المحلية وسلة المحذوفات ليست بديلاً عن صلاحيات مستخدمين وقاعدة مالية آمنة على الخادم. أي ملفات منشورة على GitHub العام يمكن قراءتها من الآخرين. المزامنة السحابية السابقة **غير مفعلة** هنا.
+
+## Cloudflare deployment - automated setup
+GitHub Actions first validates four restored HTML pages, related assets and 839 companies, and packages only public site files in `site/`. The workflow uploads a ZIP artifact and deploys to the existing Cloudflare Pages project `iraq-customs` when its API token is configured. The account ID is prefilled from the Cloudflare dashboard link supplied for this project (and can be overridden through the `CLOUDFLARE_ACCOUNT_ID` secret).
+
+**Set up once:** GitHub repository → Settings → Secrets and variables → Actions → New repository secret → Name: `CLOUDFLARE_API_TOKEN`. Value: a token created under Cloudflare → My Profile → API Tokens with `Account > Cloudflare Pages > Edit` permission for the project account. Never commit or send the secret in messages.
+
+After the secret is set, choose Actions → **Publish recovered frontend to Cloudflare Pages** → **Run workflow**, or push any new commit to `main`. A successful packaging job with an explicit `NOT DEPLOYED` warning means no Cloudflare publish occurred.
