@@ -35,5 +35,5 @@ test("no public sync token or seeded driver roster are shipped",()=>{
 });
 test("financial deletion guard is installed on ledger page",()=>{
   assert.match(text("traders.html"),/js\/accounting-guard\.js/);
-  assert.match(text("js/accounting-guard.js"),/deleteTraderPayment/);
+  assert.match(text("js/accounting-guard.js"),/restoreTraderPayment/);
 });

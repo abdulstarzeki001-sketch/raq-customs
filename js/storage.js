@@ -232,25 +232,17 @@ window.App = window.App || {};
     deleteTrader(name) {
       const traderName = this.normalizeTraderName(name);
       if (!traderName) return false;
-
+      const key = App.utils.normalizeSearchText(traderName);
+      const hasDocuments = this.getTraderLedger().some((item) => App.utils.normalizeSearchText(item.trader_name) === key);
+      const hasPayments = this.getAllTraderPayments().some((item) => App.utils.normalizeSearchText(item.trader_name) === key);
+      if (hasDocuments || hasPayments) {
+        App.utils?.showStatus?.("لا يمكن حذف تاجر مرتبط بقيود مالية. احتفظ بسجلاته أولاً.", "error");
+        return false;
+      }
       try {
-        const traders = this.getTraders().filter((entry) => {
-          return App.utils.normalizeSearchText(entry.name) !== App.utils.normalizeSearchText(traderName);
-        });
+        const traders = this.getTraders().filter((item) => App.utils.normalizeSearchText(item.name) !== key);
         localStorage.setItem(App.constants.TRADERS_STORAGE_KEY, JSON.stringify(traders));
         App.sync?.push?.(App.constants.TRADERS_STORAGE_KEY, traders);
-
-        const ledger = this.getTraderLedger().filter((entry) => {
-          return App.utils.normalizeSearchText(entry.trader_name) !== App.utils.normalizeSearchText(traderName);
-        });
-        localStorage.setItem(App.constants.TRADER_LEDGER_KEY, JSON.stringify(ledger));
-        App.sync?.push?.(App.constants.TRADER_LEDGER_KEY, ledger);
-
-        const payments = this.getTraderPayments().filter((entry) => {
-          return App.utils.normalizeSearchText(entry.trader_name) !== App.utils.normalizeSearchText(traderName);
-        });
-        localStorage.setItem(App.constants.TRADER_PAYMENT_KEY, JSON.stringify(payments));
-        App.sync?.push?.(App.constants.TRADER_PAYMENT_KEY, payments);
         return true;
       } catch (error) {
         console.error(error);
@@ -278,7 +270,7 @@ window.App = window.App || {};
       const valueText = String(entry?.document_value_usd ?? "").trim();
       const value = Number(valueText);
 
-      if (!trader_name || !company_name_project || !driver_name || !destination_governorate || !doc_id || !date_str || !Number.isFinite(value) || value <= 0) {
+      if (!trader_name || !company_name_project || !driver_name || !destination_governorate || !doc_id || !date_str || !valueText || !Number.isFinite(value) || value < 0) {
         return false;
       }
 
@@ -301,7 +293,11 @@ window.App = window.App || {};
       });
 
       try {
-        const toSave = ledger.slice(0, 5000);
+        if (ledger.length > 5000) {
+          App.utils?.showStatus?.("تم بلوغ حد السجل المحلي. صدّر نسخة احتياطية قبل إضافة قيود جديدة.", "error");
+          return false;
+        }
+        const toSave = ledger;
         localStorage.setItem(App.constants.TRADER_LEDGER_KEY, JSON.stringify(toSave));
         App.sync?.push?.(App.constants.TRADER_LEDGER_KEY, toSave);
         return true;
@@ -311,7 +307,7 @@ window.App = window.App || {};
       }
     },
 
-    getTraderPayments() {
+    getAllTraderPayments() {
       try {
         const raw = JSON.parse(localStorage.getItem(App.constants.TRADER_PAYMENT_KEY) || "[]");
         return Array.isArray(raw) ? raw : [];
@@ -319,6 +315,14 @@ window.App = window.App || {};
         console.error(error);
         return [];
       }
+    },
+
+    getTraderPayments() {
+      return this.getAllTraderPayments().filter((item) => !item.deleted_at);
+    },
+
+    getDeletedTraderPayments() {
+      return this.getAllTraderPayments().filter((item) => Boolean(item.deleted_at));
     },
 
     saveTraderPayment(entry) {
@@ -338,7 +342,7 @@ window.App = window.App || {};
 
       this.saveTrader(trader_name);
 
-      const payments = this.getTraderPayments();
+      const payments = this.getAllTraderPayments();
       payments.unshift({
         id: `pay_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
         trader_name,
@@ -351,7 +355,11 @@ window.App = window.App || {};
       });
 
       try {
-        const toSave = payments.slice(0, 5000);
+        if (payments.length > 5000) {
+          App.utils?.showStatus?.("تم بلوغ حد الحركات المحلية. احفظ نسخة احتياطية أولاً.", "error");
+          return false;
+        }
+        const toSave = payments;
         localStorage.setItem(App.constants.TRADER_PAYMENT_KEY, JSON.stringify(toSave));
         App.sync?.push?.(App.constants.TRADER_PAYMENT_KEY, toSave);
         return true;
@@ -364,9 +372,30 @@ window.App = window.App || {};
     deleteTraderPayment(id) {
       const paymentId = String(id ?? "").trim();
       if (!paymentId) return false;
-
+      const payments = this.getAllTraderPayments();
+      const index = payments.findIndex((item) => String(item.id ?? "") === paymentId && !item.deleted_at);
+      if (index < 0) return false;
+      payments[index] = { ...payments[index], deleted_at: new Date().toISOString() };
       try {
-        const payments = this.getTraderPayments().filter((entry) => String(entry.id ?? "") !== paymentId);
+        localStorage.setItem(App.constants.TRADER_PAYMENT_KEY, JSON.stringify(payments));
+        App.sync?.push?.(App.constants.TRADER_PAYMENT_KEY, payments);
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+    },
+
+    restoreTraderPayment(id) {
+      const paymentId = String(id ?? "").trim();
+      if (!paymentId) return false;
+      const payments = this.getAllTraderPayments();
+      const index = payments.findIndex((item) => String(item.id ?? "") === paymentId && Boolean(item.deleted_at));
+      if (index < 0) return false;
+      const restored = { ...payments[index] };
+      delete restored.deleted_at;
+      payments[index] = restored;
+      try {
         localStorage.setItem(App.constants.TRADER_PAYMENT_KEY, JSON.stringify(payments));
         App.sync?.push?.(App.constants.TRADER_PAYMENT_KEY, payments);
         return true;
@@ -375,5 +404,6 @@ window.App = window.App || {};
         return false;
       }
     }
+
   };
 })(window.App);

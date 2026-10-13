@@ -223,7 +223,7 @@ window.App = window.App || {};
       tradersList.querySelectorAll("[data-delete-trader]").forEach((button) => {
         button.addEventListener("click", () => {
           const traderName = button.dataset.deleteTrader || "";
-          const confirmed = window.confirm(`سيتم حذف التاجر "${traderName}" مع كل وثائقه وحركاته المالية. هل أنت متأكد؟`);
+          const confirmed = window.confirm(`يمكن حذف التاجر فقط إذا لم تكن لديه مستندات أو حركات مالية. هل تتابع؟`);
           if (!confirmed) return;
 
           const deleted = App.storage.deleteTrader(traderName);
@@ -233,7 +233,7 @@ window.App = window.App || {};
           }
 
           this.refresh();
-          App.utils.showStatus("تم حذف التاجر وكل بياناته", "info");
+          App.utils.showStatus("تم حذف التاجر دون المساس بالسجلات المالية", "info");
         });
       });
     },
@@ -322,7 +322,7 @@ window.App = window.App || {};
         runningBalance += Number(entry.debit || 0) - Number(entry.credit || 0);
         const canDelete = entry.entry_type === "payment";
         const actionButton = canDelete
-          ? `<button type="button" class="mini-btn danger" data-delete-payment="${App.utils.safeText(entry.row_id)}">حذف الحركة</button>`
+          ? `<button type="button" class="mini-btn danger" data-delete-payment="${App.utils.safeText(entry.row_id)}">نقل للسلة</button>`
           : '<span>—</span>';
 
         return `
@@ -335,7 +335,7 @@ window.App = window.App || {};
             <td>${App.utils.safeText(entry.driver_name || "—")}</td>
             <td>${App.utils.safeText(entry.destination_governorate || "—")}</td>
             <td>${App.utils.safeText(entry.company_name_project || "—")}</td>
-            <td class="amount-positive">${entry.debit ? `${this.formatUsd(entry.debit)} $` : "—"}</td>
+            <td class="amount-positive">${entry.entry_type === "document" ? `${this.formatUsd(entry.debit)} $` : "—"}</td>
             <td class="amount-negative">${entry.credit ? `${this.formatUsd(entry.credit)} $` : "—"}</td>
             <td class="balance-cell">${this.formatUsd(runningBalance)} $</td>
             <td class="screen-only">${actionButton}</td>
@@ -353,12 +353,12 @@ window.App = window.App || {};
 
           const deleted = App.storage.deleteTraderPayment(paymentId);
           if (!deleted) {
-            App.utils.showStatus("تعذر حذف الحركة", "error");
+            App.utils.showStatus("تعذر نقل للسلة", "error");
             return;
           }
 
           this.refresh();
-          App.utils.showStatus("تم حذف الحركة المالية", "info");
+          App.utils.showStatus("تم نقل للسلة المالية", "info");
         });
       });
     },
@@ -367,6 +367,7 @@ window.App = window.App || {};
       this.renderCompanyFilter();
       this.renderTraders();
       this.renderLedger();
+      App.accountingGuard?.renderTrash?.();
     },
 
     bindEvents() {

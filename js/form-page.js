@@ -879,10 +879,24 @@ window.App = window.App || {};
         App.dom.setFormValue("qr_image_data", qrBase64 || "");
 
         const doc = this.buildDocObject();
+        const oldDoc = localStorage.getItem(App.constants.STORAGE_KEY);
         const saved = App.storage.saveDoc(doc);
         if (!saved) return;
+
+        // Never report a document as completed unless its ledger entry was persisted.
+        const savedLedger = this.saveTraderTransaction(doc);
+        if (!savedLedger) {
+          try {
+            if (oldDoc === null) localStorage.removeItem(App.constants.STORAGE_KEY);
+            else localStorage.setItem(App.constants.STORAGE_KEY, oldDoc);
+          } catch (error) {
+            console.error("Failed to restore previous document after ledger failure", error);
+          }
+          App.utils.showStatus("لم يتم إنشاء الوثيقة: تعذر تسجيل القيد المالي. احتُفظ بالمسودة.", "error");
+          return;
+        }
+
         this.saveCurrentDriver();
-        this.saveTraderTransaction(doc);
         // Local-only recovered build: no cloud sync until authenticated backend is configured.
         App.storage.clearDraft();
         App.storage.clearSelectedCompany();
