@@ -44,8 +44,8 @@ window.App = window.App || {};
       },
       document_value_usd: {
         label: "قيمة الوثيقة بالدولار",
-        allow: /^[0-9٠-٩]+([.,٫][0-9٠-٩]+)?$/,
-        hint: "قيمة الوثيقة يجب أن تكون رقمًا صحيحًا أو عشريًا"
+        allow: /^[0-9٠-٩]+([.,٫][0-9٠-٩]{1,2})?$/,
+        hint: "قيمة الوثيقة يجب أن تحتوي على منزلة أو منزلتين عشريتين كحد أقصى"
       }
     },
 
@@ -875,8 +875,21 @@ window.App = window.App || {};
 
         if (!this.validateBeforeSubmit()) return;
 
+        const file = App.dom.byId("qr_file")?.files?.[0];
+        if (!file || !["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+          App.utils.showStatus("أرفق رمز QR بصيغة PNG أو JPEG أو WebP.", "error");
+          return;
+        }
+        if (file.size > 1500000) {
+          App.utils.showStatus("صورة QR أكبر من 1.5 ميغابايت. قلل حجمها للحفاظ على مساحة المتصفح.", "error");
+          return;
+        }
         const qrBase64 = await this.getQrUploadBase64();
-        App.dom.setFormValue("qr_image_data", qrBase64 || "");
+        if (!qrBase64 || !qrBase64.startsWith("data:image/")) {
+          App.utils.showStatus("تعذر قراءة صورة QR. جرّب ملف صورة آخر.", "error");
+          return;
+        }
+        App.dom.setFormValue("qr_image_data", qrBase64);
 
         const doc = this.buildDocObject();
         const oldDoc = localStorage.getItem(App.constants.STORAGE_KEY);

@@ -44,11 +44,24 @@ window.App = window.App || {};
     },
 
     normalizeAmount(value) {
-      const normalized = App.utils.normalizeDigits(String(value ?? ""))
-        .replace(/٫/g, ".")
-        .replace(/,/g, ".")
-        .trim();
-      return Number(normalized);
+      const input = App.utils.normalizeDigits(String(value ?? "")).trim()
+        .replace(/[\s\u00A0\u202F]/g, "")
+        .replace(/٬/g, ",")
+        .replace(/٫/g, ".");
+      if (!input || !/^[0-9.,]+$/.test(input)) return NaN;
+
+      let normalized = input;
+      if (/^\d{1,3}(,\d{3})+(\.\d{1,2})?$/.test(input)) {
+        normalized = input.replace(/,/g, "");
+      } else if (/^\d{1,3}(\.\d{3})+(,\d{1,2})?$/.test(input)) {
+        normalized = input.replace(/\./g, "").replace(",", ".");
+      } else if (/^\d+(?:[.,]\d{1,2})?$/.test(input)) {
+        normalized = input.replace(",", ".");
+      } else {
+        return NaN;
+      }
+      const result = Number(normalized);
+      return Number.isFinite(result) ? result : NaN;
     },
 
     getUniqueCompanies(entries) {

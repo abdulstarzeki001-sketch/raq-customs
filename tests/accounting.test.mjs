@@ -87,3 +87,20 @@ test("saving at capacity never discards old receipts",()=>{
   assert.equal(storage.saveTraderPayment(payment()),false);
   assert.equal(JSON.parse(store.get("payments")).length,5000);
 });
+
+import { runInNewContext as runSource } from "node:vm";
+import { readFileSync as readSource } from "node:fs";
+test("money parser does not silently turn 1,500 into 1.5",()=>{
+  const source=readSource(new URL("../js/traders-page.js", import.meta.url),"utf8");
+  const App={utils:{normalizeDigits(v){return String(v).replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));}}};
+  runSource(source,{window:{App},App,Number,String,NaN});
+  const parse=App.tradersPage.normalizeAmount;
+  assert.equal(parse("1,500"),1500);
+  assert.equal(parse("1,500.25"),1500.25);
+  assert.equal(parse("1.500,25"),1500.25);
+  assert.equal(parse("١٬٥٠٠٫٢٥"),1500.25);
+  assert.equal(parse("0.50"),0.5);
+  assert.ok(Number.isNaN(parse("1,50,0")));
+  assert.ok(Number.isNaN(parse("1.2345")));
+  assert.ok(Number.isNaN(parse("hello")));
+});
