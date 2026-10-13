@@ -258,7 +258,8 @@ window.App = window.App || {};
 
       return this.getCombinedEntries().filter((entry) => {
         const traderMatch = !traderName || App.utils.normalizeSearchText(entry.trader_name) === App.utils.normalizeSearchText(traderName);
-        const companyMatch = !companyName || entry.entry_type !== "document" || App.utils.normalizeSearchText(entry.company_name_project) === App.utils.normalizeSearchText(companyName);
+        // A payment is linked to a trader, not a company; never attribute it to a company implicitly.
+        const companyMatch = !companyName || (entry.entry_type === "document" && App.utils.normalizeSearchText(entry.company_name_project) === App.utils.normalizeSearchText(companyName));
         return traderMatch && companyMatch;
       });
     },
@@ -285,6 +286,7 @@ window.App = window.App || {};
       else descParts.push("الكشف الحالي يعرض جميع التجار");
 
       if (companyName) descParts.push(`تصفية الشركة: ${companyName}`);
+      if (companyName) descParts.push("القبوضات غير المربوطة بالشركة مستبعدة من هذا الكشف؛ الرصيد يمثل الوثائق المختارة فقط");
       descParts.push(`إجمالي الوثائق ${this.formatUsd(docsTotal)} $`);
       descParts.push(`إجمالي الحركات الدائنة ${this.formatUsd(paymentsTotal)} $`);
       descParts.push(`الرصيد المتبقي ${this.formatUsd(balance)} $`);

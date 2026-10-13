@@ -104,3 +104,19 @@ test("money parser does not silently turn 1,500 into 1.5",()=>{
   assert.ok(Number.isNaN(parse("1.2345")));
   assert.ok(Number.isNaN(parse("hello")));
 });
+
+test("company-only filter must not allocate unrelated trader payments",()=>{
+  const source=readSource(new URL("../js/traders-page.js", import.meta.url),"utf8");
+  const App={utils:{normalizeSearchText(v){return String(v??"").toLowerCase().trim();}}};
+  runSource(source,{window:{App},App,Number,String,NaN});
+  const p=App.tradersPage;
+  p.getElements=()=>({traderFilter:{value:""},companyFilter:{value:"Factory A"}});
+  p.getCombinedEntries=()=>[
+    {entry_type:"document",company_name_project:"Factory A",debit:10,credit:0,trader_name:"Trader"},
+    {entry_type:"document",company_name_project:"Factory B",debit:20,credit:0,trader_name:"Trader"},
+    {entry_type:"payment",company_name_project:"—",debit:0,credit:30,trader_name:"Trader"}
+  ];
+  const entries=p.getFilteredEntries();
+  assert.equal(entries.length,1);
+  assert.equal(entries[0].debit,10);
+});
