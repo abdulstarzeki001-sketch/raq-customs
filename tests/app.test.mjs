@@ -64,3 +64,14 @@ test("no legacy cloud sync token or external scripts",()=>{
  assert.doesNotMatch(html,/<script[^>]+https?:\/\//i);
  assert.doesNotMatch(html+app+model,/X-Sync-Token|SYNC_TOKEN|api\/data\/|70525cc3f68b080d085da561681b7029b91a390fa677493e/);
 });
+
+test("signature colors load without breaking interface assets",()=>{
+  const html=file("index.html"),theme=file("assets/theme-signature.css");
+  assert.match(html,/href="\.\/assets\/theme-signature\.css"/);
+  assert.match(theme,/--nav:\s*#121F33/i);
+  assert.match(theme,/--gold:\s*#C7A86D/i);
+  assert.match(theme,/@media\s*\(max-width:\s*780px\)/);
+  assert.match(theme,/@media print/);
+  assert.match(theme,/prefers-reduced-motion/);
+  assert.doesNotMatch(theme,/@import\b|https?:\/\//);
+});
