@@ -1,0 +1,14 @@
+name: Verify uploaded ZIP site snapshot
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download first site file and compare to user ZIP
+        run: |
+          curl -fsSL 'https://261c3d56.iraq-customs.pages.dev/index.html' -o /tmp/source-index.html
+          echo '9b48df1e4fe3de6cc2870ec757994098bd8002c774be3c6d9c6f407b97a6d978  /tmp/source-index.html' | sha256sum --check
