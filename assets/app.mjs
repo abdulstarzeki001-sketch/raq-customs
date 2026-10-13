@@ -2,7 +2,7 @@ import {KEY,nameKey,toCents,usd,esc,empty,checked,addDocument,addReceipt,changeS
 
 const byId=id=>document.getElementById(id);
 const money=n=>usd(n);
-const stamp=()=>new Date().toISOString().slice(0,10);
+const stamp=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");};
 const uniqueId=()=>globalThis.crypto?.randomUUID?.() || "r_"+Date.now()+"_"+Math.random().toString(36).slice(2);
 let db=empty(), companies=[], toastTimer;
 function load(){
@@ -142,7 +142,7 @@ function registerForms(){
  });
 }
 function printable(title,sub,heads,rows,qrImage=""){
-  const qr=/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(qrImage) && qrImage.length<280000 ? '<p><img alt="رمز QR مرفق" style="max-width:150px;max-height:150px" src="'+esc(qrImage)+'"></p>' : "";
+  const qr=/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(qrImage) && qrImage.length<280000 ? '<p><img alt="رمز QR مرفق" class="print-qr" src="'+esc(qrImage)+'"></p>' : "";
   byId("printArea").innerHTML='<div class="print-sheet"><h1>'+esc(title)+'</h1><p>'+esc(sub)+'</p><hr>'+rowTable(heads,rows)+qr+"<p>تاريخ الطباعة: "+esc(new Date().toLocaleString("ar-IQ"))+"</p><small>سجل خاص بالشركة وليس وثيقة صادرة عن جهة حكومية.</small></div>";
   const image=byId("printArea").querySelector("img");
   if(image&&image.decode){image.decode().catch(()=>{}).finally(()=>window.print());}

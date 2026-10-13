@@ -58,3 +58,6 @@ th{background:#f1f5f8;color:#56677d;font-weight:700;white-space:nowrap}td,th{pad
  #printArea .print-sheet{padding:0;margin:0;color:black}
  @page{size:A4;margin:14mm}
 }
+
+.print-qr{max-width:150px;max-height:150px;object-fit:contain}
+.print-sheet{line-height:1.75;font-size:12px}.print-sheet h1{font-size:22px;text-align:center}.print-sheet p{text-align:center}
