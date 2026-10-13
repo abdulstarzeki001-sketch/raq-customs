@@ -30,6 +30,9 @@ function switchTab(tab){
   if(!byId(tab))return;
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===tab));
   document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+  const current=document.querySelector('[data-tab="'+tab+'"] .nav-label b');
+  if(current&&byId("topCurrentSection"))byId("topCurrentSection").textContent=current.textContent;
+  document.querySelectorAll("[data-tab]").forEach(el=>{if(el.dataset.tab===tab)el.setAttribute("aria-current","page");else el.removeAttribute("aria-current");});
   window.scrollTo({top:0,behavior:"auto"});
 }
 function rowTable(headers,rows){
@@ -55,6 +58,7 @@ function renderDatalists(){
 }
 function renderHome(){
   const stats=statement(db);
+  const label=byId("dashboardDate");if(label)label.textContent=new Date().toLocaleDateString("ar-IQ",{weekday:"long",day:"numeric",month:"long"});
   byId("homeDocCount").textContent=String(db.documents.filter(x=>x.status==="active").length);
   byId("homeDebit").textContent=money(stats.debit);
   byId("homeCredit").textContent=money(stats.credit);
@@ -64,18 +68,24 @@ function renderHome(){
 }
 function renderCompanies(){
   const q=nameKey(byId("companySearch").value);
-  const filtered=companies.filter(c=>[c.CompanyNameProject,c.Number,c.LicenseApprovalNumber,c.Brand].some(v=>nameKey(v).includes(q))).slice(0,25);
-  byId("companiesCount").textContent=companies.length+" شركة ضمن الدليل العام";
-  byId("companyList").innerHTML=filtered.map(c=>'<div class="company-item"><div><strong>'+esc(c.CompanyNameProject)+'</strong><small>رقم الشركة: '+esc(c.Number)+' | رقم الإجازة: '+esc(c.LicenseApprovalNumber||"—")+'</small></div>'+btn("choose-company",String(c.Number),"اختيار")+"</div>").join("")||'<div class="empty">لا توجد نتائج مطابقة</div>';
+  const matching=companies.filter(c=>[c.CompanyNameProject,c.Number,c.LicenseApprovalNumber,c.GovernorateName,c.Brand,c.GrantingLicenseApproval].some(v=>nameKey(v).includes(q))).slice(0,30);
+  byId("companiesCount").textContent=companies.length.toLocaleString("en-US")+" شركة في الدليل";
+  byId("companyList").innerHTML=matching.map(c=>{
+    const letter=String(c.CompanyNameProject||"ش").trim().slice(0,1);
+    return '<div class="company-item"><span class="company-avatar">'+esc(letter)+'</span><div><strong>'+esc(c.CompanyNameProject)+'</strong><small>المحافظة: '+esc(c.GovernorateName||"—")+' · رقم الدليل: '+esc(c.Number)+' · الإجازة: '+esc(c.LicenseApprovalNumber||"—")+'</small></div>'+btn("choose-company",String(c.Number),"اختيار")+'</div>';
+  }).join("")||'<div class="empty">لا توجد نتائج مطابقة. جرّب اسماً أو رقم إجازة آخر.</div>';
 }
 function renderDocuments(){
  const docs=db.documents;
+ const count=byId("docCountPill");if(count)count.textContent=db.documents.filter(d=>d.status==="active").length+" وثيقة نشطة";
  byId("documentList").innerHTML=rowTable(["التاريخ","الوثيقة","الشركة","التاجر","السائق / السيارة","المبلغ","الحالة","إجراء"],docs.map(x=>{
    const deleted=x.status==="deleted";
    return "<tr>"+cell(x.date)+cell(x.number)+cell(x.company)+cell(x.trader)+cell(x.driver+" / "+x.plate)+cell(money(x.amount),"number")+cell(deleted?"في السلة":"نشطة")+'<td>'+btn("print-document",x.id,"طباعة")+" "+btn(deleted?"restore-doc":"delete-doc",x.id,deleted?"استرجاع":"إلى السلة",deleted?"":"delete")+"</td></tr>";
  }));
 }
 function renderLedger(){
+ const directory=byId("traderDirectory");
+ if(directory)directory.innerHTML=[...new Set(db.traders.map(t=>t.name).filter(Boolean))].slice(0,18).map(t=>'<span class="trader-pill">'+esc(t)+"</span>").join("");
  const traderNames=[...new Set([...db.traders.map(x=>x.name),...db.documents.map(x=>x.trader),...db.receipts.map(x=>x.trader)])].filter(Boolean).sort((a,b)=>a.localeCompare(b,"ar"));
  const companyNames=uniqueNames([...db.documents,...db.receipts],"company");
  optionList(byId("ledgerTrader"),traderNames,"كل التجار");
@@ -84,7 +94,7 @@ function renderLedger(){
  byId("ledgerDebit").textContent=money(st.debit);byId("ledgerCredit").textContent=money(st.credit);byId("ledgerBalance").textContent=money(st.balance);
  byId("ledgerRows").innerHTML=rowTable(["التاريخ","النوع","المرجع","التاجر","الشركة","مدين","دائن","الرصيد","إجراء"],st.rows.map(r=>{
   const x=r.item;const kind=r.type==="document"?"doc":"receipt";
-  return "<tr>"+cell(r.date)+cell(kind==="doc"?"وثيقة":"قبض")+cell(kind==="doc"?x.number:x.reference||"—")+cell(x.trader)+cell(x.company||"—")+cell(r.debit?money(r.debit):kind==="doc"?"0.00 $":"—","number")+cell(r.credit?money(r.credit):"—","number")+cell(money(r.balance),"number")+'<td>'+btn("delete-"+kind,x.id,"إلى السلة","delete")+"</td></tr>";
+  return "<tr>"+cell(r.date)+cell(kind==="doc"?"وثيقة":x.paymentType==="settlement"?"تسوية":"قبض")+cell(kind==="doc"?x.number:x.reference||"—")+cell(x.trader)+cell(x.company||"—")+cell(r.debit?money(r.debit):kind==="doc"?"0.00 $":"—","number")+cell(r.credit?money(r.credit):"—","number")+cell(money(r.balance),"number")+'<td>'+btn("delete-"+kind,x.id,"إلى السلة","delete")+"</td></tr>";
  }));
 }
 function renderDrivers(){
@@ -103,6 +113,31 @@ function readQrImage(file){
   reader.readAsDataURL(file);
  });
 }
+
+function matchCompany(value){
+  const q=nameKey(value);
+  if(!q)return null;
+  return companies.find(c=>nameKey(c.CompanyNameProject)===q||nameKey(c.Number)===q)||null;
+}
+function fillCompanyMetadata(value){
+  const c=matchCompany(value),form=byId("documentForm"),preview=byId("companyMetaPreview");
+  if(!form||!c){if(preview)preview.hidden=true;return false;}
+  const map={company:"CompanyNameProject",companyNumber:"Number",governorate:"GovernorateName",license:"LicenseApprovalNumber",licenseDate:"LicenseApprovalDate",grantor:"GrantingLicenseApproval",specialization:"LicenseTextSpecialization",brand:"Brand",unit:"Unit"};
+  for(const [field,key] of Object.entries(map)){
+    if(!form.elements[field])continue;
+    const v=String(c[key]??"");
+    if(field==="licenseDate"&&!/^\d{4}-\d{2}-\d{2}$/.test(v))continue;
+    form.elements[field].value=v;
+  }
+  form.elements.cargo.value=String(c.CargoDetails||c.TypeIndustryProduction||"");
+  if(form.elements.itemName)form.elements.itemName.value=String(c.TypeIndustryProduction||c.CargoDetails||"");
+  if(preview){
+    preview.hidden=false;
+    preview.innerHTML="<b>تم تحديد الشركة من الدليل</b> — "+esc(c.CompanyNameProject)+" · "+esc(c.GovernorateName||"")+" · إجازة رقم "+esc(c.LicenseApprovalNumber||"—");
+  }
+  return true;
+}
+
 function registerForms(){
  byId("documentForm").addEventListener("submit",async ev=>{
   ev.preventDefault();const form=ev.currentTarget;
@@ -136,9 +171,15 @@ function registerForms(){
   if(result){form.reset();notice("تمت إضافة السائق");}
  });
  const form=byId("documentForm");
+ form.elements.company.addEventListener("change",()=>fillCompanyMetadata(form.elements.company.value));
+ form.elements.company.addEventListener("blur",()=>fillCompanyMetadata(form.elements.company.value));
+ form.addEventListener("reset",()=>{const preview=byId("companyMetaPreview");if(preview)preview.hidden=true;});
  form.elements.driver.addEventListener("change",()=>{
   const d=db.drivers.find(x=>nameKey(x.name)===nameKey(form.elements.driver.value));
-  if(d&&!form.elements.plate.value)form.elements.plate.value=d.plate;
+  if(d){
+    if(!form.elements.plate.value)form.elements.plate.value=d.plate;
+    if(form.elements.registrationGovernorate&&!form.elements.registrationGovernorate.value)form.elements.registrationGovernorate.value=d.governorate||"";
+  }
  });
 }
 function printable(title,sub,heads,rows,qrImage=""){
@@ -151,7 +192,7 @@ function printable(title,sub,heads,rows,qrImage=""){
 function printDoc(id){
  const x=db.documents.find(d=>d.id===id);if(!x)return;
  printable("وثيقة حمولة داخلية","رقم الوثيقة: "+x.number,["الحقل","البيان"],[
-  ["رقم الوثيقة",x.number],["التاريخ",x.date],["الشركة",x.company],["التاجر",x.trader],["السائق",x.driver],["السيارة",x.plate],["الوجهة",x.destination],["الحمولة",x.cargo],["المبلغ",money(x.amount)]
+  ["رقم الوثيقة",x.number],["التاريخ",x.date],["الوقت",x.time],["الموضوع",x.subject],["الشركة",x.company],["رقم الشركة",x.companyNumber],["المحافظة",x.governorate],["رقم الإجازة",x.license],["تاريخ الإجازة",x.licenseDate],["الجهة المانحة",x.grantor],["الاختصاص",x.specialization],["العلامة التجارية",x.brand],["التاجر",x.trader],["السائق",x.driver],["السيارة",x.plate],["محافظة تسجيل السيارة",x.registrationGovernorate],["الوجهة",x.destination],["السيطرة",x.checkpoint],["الحمولة",x.cargo],["نوع المنتج",x.itemName],["الطاقة الإنتاجية",x.productionCapacity],["الوزن / الكمية",x.weight],["الوحدة",x.unit],["المرجع النصي (غير معتمد)",x.qrReference],["المبلغ",money(x.amount)]
  ].map(pair=>"<tr>"+cell(pair[0])+cell(pair[1])+"</tr>"),x.qrImage||"");
 }
 function handleAction(action,id){
@@ -161,9 +202,8 @@ function handleAction(action,id){
   const item=companies.find(x=>String(x.Number)===id);
   if(!item)return;
   const form=byId("documentForm");
-  form.elements.company.value=item.CompanyNameProject;
-  if(item.CargoDetails)form.elements.cargo.value=item.CargoDetails;
-  switchTab("documents");notice("تم اختيار الشركة");return;
+  fillCompanyMetadata(item.CompanyNameProject);
+  switchTab("documents");notice("تم استرجاع بيانات الشركة والإجازة من الدليل");return;
  }
  if(action==="delete-driver"){
   if(!confirm("حذف هذا السائق من الدليل؟ لن يتم حذف الوثائق السابقة."))return;
@@ -224,6 +264,8 @@ async function init(){
   companies=data;
  }catch(e){notice("تعذر تحميل دليل الشركات: "+e.message,true);}
  render();renderTrash();
- byId("clock").textContent=new Date().toLocaleDateString("ar-IQ");
+ const hash=decodeURIComponent(window.location.hash.slice(1));
+ if(["home","companies","documents","ledger","drivers","settings"].includes(hash))switchTab(hash);
+ byId("clock").textContent=new Date().toLocaleDateString("ar-IQ",{year:"numeric",month:"long",day:"numeric"});
 }
 init();

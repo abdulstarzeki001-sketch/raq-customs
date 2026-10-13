@@ -65,13 +65,52 @@ test("no legacy cloud sync token or external scripts",()=>{
  assert.doesNotMatch(html+app+model,/X-Sync-Token|SYNC_TOKEN|api\/data\/|70525cc3f68b080d085da561681b7029b91a390fa677493e/);
 });
 
-test("signature colors load without breaking interface assets",()=>{
-  const html=file("index.html"),theme=file("assets/theme-signature.css");
-  assert.match(html,/href="\.\/assets\/theme-signature\.css"/);
-  assert.match(theme,/--nav:\s*#121F33/i);
-  assert.match(theme,/--gold:\s*#C7A86D/i);
-  assert.match(theme,/@media\s*\(max-width:\s*780px\)/);
-  assert.match(theme,/@media print/);
-  assert.match(theme,/prefers-reduced-motion/);
-  assert.doesNotMatch(theme,/@import\b|https?:\/\//);
+
+test("responsive Arabic admin UI has six tabs and restored legacy form fields",()=>{
+ const html=file("index.html"),css=file("assets/atelier.css"),app=file("assets/app.mjs");
+ assert.match(html,/lang="ar" dir="rtl"/);
+ const sections=["home","companies","documents","ledger","drivers","settings"];
+ for(const page of sections){
+  assert.match(html,new RegExp('id="'+page+'"'),page);
+  assert.match(html,new RegExp('data-tab="'+page+'"'),page);
+ }
+ for(const id of ["homeDocCount","homeDebit","homeCredit","homeBalance","companySearch","companyList","companiesCount","documentForm","documentList","ledgerTrader","ledgerCompany","ledgerRows","receiptForm","traderForm","traderDirectory","driverForm","driversList","exportData","importData","clearAll","trashList","companyMetaPreview","printArea"]){
+  assert.match(html,new RegExp('id="'+id+'"'),id);
+ }
+ for(const field of ["number","date","time","subject","company","companyNumber","governorate","license","licenseDate","grantor","specialization","brand","trader","driver","plate","registrationGovernorate","checkpoint","destination","weight","unit","itemName","productionCapacity","cargo","qrReference","amount","qrFile"]){
+  assert.match(html,new RegExp('name="'+field+'"'),field);
+ }
+ assert.match(html,/name="paymentType"/);
+ assert.match(html,/name="note"/);
+ assert.match(css,/@media\(max-width:760px\)/);
+ assert.match(css,/grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
+ assert.match(css,/@media print/);
+ assert.match(app,/function fillCompanyMetadata/);
+});
+test("legacy company and cargo metadata are persisted in document records",()=>{
+ const state=empty();
+ const created=addDocument(state,{
+  number:"120",date:"2026-10-13",time:"15:40",subject:"سجل نقل",
+  company:"الشركة",companyNumber:"18",governorate:"دهوك",license:"13181",
+  licenseDate:"2026-01-01",grantor:"المديرية",brand:"ستار",
+  specialization:"صناعة",trader:"تاجر",driver:"سائق",plate:"3377",
+  registrationGovernorate:"أربيل",checkpoint:"سيطرة",destination:"بغداد",
+  weight:"12",unit:"طن",itemName:"كارتون",productionCapacity:"13400",
+  cargo:"وصف",qrReference:"INTERNAL",amount:"0"
+ },"new-doc");
+ assert.equal(created.license,"13181");
+ assert.equal(created.companyNumber,"18");
+ assert.equal(created.time,"15:40");
+ assert.equal(created.productionCapacity,"13400");
+ assert.equal(created.qrReference,"INTERNAL");
+ assert.equal(checked(JSON.parse(JSON.stringify(state))).documents[0].licenseDate,"2026-01-01");
+});
+test("receipts and settlements preserve type, notes and balances",()=>{
+ const state=empty();
+ addReceipt(state,{trader:"تاجر",date:"2026-10-13",amount:"100",paymentType:"settlement",reference:"1",note:"حوالة"},"r-set");
+ addReceipt(state,{trader:"تاجر",date:"2026-10-13",amount:"50",paymentType:"receipt"},"r-rec");
+ assert.equal(statement(state).credit,15000);
+ assert.equal(state.receipts[0].paymentType,"receipt");
+ assert.equal(state.receipts[1].paymentType,"settlement");
+ assert.equal(state.receipts[1].note,"حوالة");
 });
