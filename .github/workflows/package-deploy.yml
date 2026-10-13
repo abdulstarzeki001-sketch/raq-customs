@@ -11,6 +11,7 @@ jobs:
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || 'd2680f7c5ff39f8d9177a51dbf7fec75' }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
