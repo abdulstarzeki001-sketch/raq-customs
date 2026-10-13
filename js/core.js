@@ -168,7 +168,8 @@ window.App = window.App || {};
     },
 
     buildQrGeneratorUrl(text) {
-      return `https://quickchart.io/qr?text=${encodeURIComponent(text)}&size=200`;
+      // In this recovered offline copy, never send document data to external QR services.
+      return "";
     },
 
     getQrSrc(doc) {

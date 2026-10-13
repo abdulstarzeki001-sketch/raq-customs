@@ -1,6 +1,6 @@
 /**
  * Recovered public frontend — LOCAL-ONLY safe default.
- * The production site's exposed X-Sync-Token must be revoked separately.
+ * Any authentication token exposed in the original production frontend must be revoked server-side.
  * Do not assume cloud data has been copied or is available here.
  */
 window.App = window.App || {};
