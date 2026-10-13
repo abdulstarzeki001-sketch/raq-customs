@@ -1,16 +1,17 @@
-name: Validate recovered frontend
+name: Validate V2
 on:
   push:
-    branches: [main]
+    branches: [main, rebuild-v2]
   pull_request:
 permissions:
   contents: read
 jobs:
-  smoke:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-      - run: node --test tests/*.test.mjs
+          node-version: "22"
+      - name: Run financial and structural tests
+        run: node --test tests/*.test.mjs

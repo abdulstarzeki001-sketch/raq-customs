@@ -1,11 +1,8 @@
-# Do not commit private keys or real environment secrets
 .env
 .env.*
-!.env.example
 *.pem
 *.key
 *.p12
-.wrangler/
 node_modules/
-dist/
-.DS_Store
+.wrangler/
+*.backup.json
