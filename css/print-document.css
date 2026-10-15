@@ -1,0 +1,104 @@
+/*
+ * Document A4 print/PDF repair.
+ * Keep Arabic as selectable browser-rendered text.
+ * A document may span more than one page; never crop content to 296mm.
+ */
+@media print {
+  @page { size: A4 portrait; margin: 10mm !important; }
+
+  html, body {
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .toolbar, #localOnlyNotice { display: none !important; }
+
+  #documentPage.a4-page {
+    display: block !important;
+    position: static !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    background: #fff !important;
+    color: #111 !important;
+    font-family: "Geeza Pro", "Noto Naskh Arabic", Tahoma, Arial, sans-serif !important;
+    line-height: 1.5 !important;
+  }
+
+  #documentPage h1 { font-size: 16pt !important; margin: 0 0 2mm !important; }
+  #documentPage h2 { font-size: 12pt !important; margin: 0 0 4mm !important; }
+
+  /* State clearly that this locally generated record is not official. */
+  #documentPage .badge-internal {
+    display: block !important;
+    margin: 0 0 4mm !important;
+    padding: 2mm 3mm !important;
+    background: #fff4d1 !important;
+    border: 1px solid #b89b55 !important;
+    font-size: 9pt !important;
+    color: #4f3c10 !important;
+  }
+
+  #documentPage .doc-grid {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 2mm 0 4mm !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
+  #documentPage .doc-grid thead { display: table-header-group !important; }
+  #documentPage .doc-grid tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  #documentPage .doc-grid th, #documentPage .doc-grid td {
+    padding: 2mm !important;
+    border: 1px solid #8b979d !important;
+    color: #161b22 !important;
+    font-size: 9pt !important;
+    vertical-align: top !important;
+    text-align: right !important;
+    overflow-wrap: anywhere !important;
+    white-space: normal !important;
+  }
+  #documentPage .doc-grid th { background: #e9f0f1 !important; }
+  #documentPage .doc-grid .section th {
+    color: #fff !important;
+    background: #0c4349 !important;
+  }
+
+  #documentPage .qr-zone {
+    padding: 3mm 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  #documentPage .barcode-img {
+    max-width: 35mm !important;
+    max-height: 35mm !important;
+    width: auto !important;
+    height: auto !important;
+  }
+
+  #documentPage p { overflow-wrap: anywhere !important; }
+  #documentPage * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

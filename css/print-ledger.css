@@ -1,0 +1,144 @@
+/*
+ * A4 landscape ledger print/PDF repair.
+ * Print the complete desktop table even on phones; repeat headings on every page.
+ */
+@media print {
+  @page { size: A4 landscape; margin: 10mm !important; }
+
+  html, body {
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+  }
+
+  #localOnlyNotice,
+  #status,
+  #accountingTrash,
+  #tradersPage .app-header,
+  #tradersPage .sidebar,
+  #tradersPage .toolbar-card,
+  #tradersPage .summary-card,
+  #tradersPage .stats-grid,
+  #tradersPage .mobile-ledger-cards,
+  #tradersPage .note-box,
+  #tradersPage .screen-only {
+    display: none !important;
+  }
+
+  #tradersPage,
+  #tradersPage .main-container,
+  #tradersPage .content-area,
+  #tradersPage .ledger-print-card {
+    display: block !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #tradersPage .print-header {
+    display: block !important;
+    border-bottom: 2px solid #222 !important;
+    padding-bottom: 3mm !important;
+    margin: 0 0 4mm !important;
+    color: #111 !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  #tradersPage .print-header h1 {
+    font-size: 16pt !important;
+    line-height: 1.4 !important;
+    margin: 0 0 2mm !important;
+  }
+
+  #tradersPage .print-header p {
+    font-size: 9pt !important;
+    line-height: 1.5 !important;
+    margin: 1mm 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #tradersPage .ledger-table-wrapper {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+    border: 0 !important;
+  }
+
+  #tradersPage .ledger-table-wrapper table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    direction: rtl !important;
+  }
+  #tradersPage .ledger-table-wrapper thead {
+    display: table-header-group !important;
+  }
+  #tradersPage .ledger-table-wrapper tbody {
+    display: table-row-group !important;
+  }
+  #tradersPage .ledger-table-wrapper tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  #tradersPage .ledger-table-wrapper th,
+  #tradersPage .ledger-table-wrapper td {
+    border: 1px solid #5d6670 !important;
+    padding: 1.5mm 1mm !important;
+    text-align: right !important;
+    font-family: "Geeza Pro", "Noto Naskh Arabic", Tahoma, Arial, sans-serif !important;
+    font-size: 8pt !important;
+    line-height: 1.45 !important;
+    vertical-align: top !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    white-space: normal !important;
+    color: #171717 !important;
+    background: #fff !important;
+  }
+
+  #tradersPage .ledger-table-wrapper th {
+    background: #e9eef1 !important;
+    font-weight: 700 !important;
+  }
+
+  /* Hide the on-screen actions column; all financial columns remain visible. */
+  #tradersPage .ledger-table-wrapper th.screen-only,
+  #tradersPage .ledger-table-wrapper td.screen-only {
+    display: none !important;
+  }
+
+  #tradersPage .ledger-table-wrapper th:nth-child(1) { width: 4%; }
+  #tradersPage .ledger-table-wrapper th:nth-child(2) { width: 9%; }
+  #tradersPage .ledger-table-wrapper th:nth-child(3) { width: 9%; }
+  #tradersPage .ledger-table-wrapper th:nth-child(4) { width: 9%; }
+  #tradersPage .ledger-table-wrapper th:nth-child(5) { width: 10%; }
+  #tradersPage .ledger-table-wrapper th:nth-child(6) { width: 10%; }
+  #tradersPage .ledger-table-wrapper th:nth-child(7) { width: 10%; }
+  #tradersPage .ledger-table-wrapper th:nth-child(8) { width: 15%; }
+  #tradersPage .ledger-table-wrapper th:nth-child(9) { width: 8%; }
+  #tradersPage .ledger-table-wrapper th:nth-child(10) { width: 8%; }
+  #tradersPage .ledger-table-wrapper th:nth-child(11) { width: 8%; }
+
+  #tradersPage .row-type-badge { border: none !important; padding: 0 !important; background: transparent !important; color: #111 !important; }
+  #tradersPage .ledger-table-wrapper #ledgerEmptyState { display: none !important; }
+
+  #tradersPage * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

@@ -186,96 +186,27 @@ window.App = window.App || {};
       }
     },
 
-    /* PDF = نفس الطباعة = مطابق 100% للشاشة */
+    // Browser-native printing preserves RTL text and works in the active Safari tab.
+    // Choose "Save as PDF" in the print/share sheet. No popup or premature window.close().
     downloadPdf() {
       this.printLikeOriginal();
     },
 
     printLikeOriginal() {
       if (!this.validateBeforePrint()) return;
-
-      const docElement = App.dom.byId("documentPage");
-      if (!docElement) {
-        window.print();
+      if (!App.dom.byId("documentPage")) {
+        window.alert("تعذر العثور على الوثيقة للطباعة.");
         return;
       }
-
-      const html = docElement.outerHTML;
-      const win = window.open("", "_blank", "width=900,height=1000");
-      if (!win) {
-        window.print();
-        return;
-      }
-
-      const headParts = [];
-      headParts.push('<meta charset="utf-8" />');
-      headParts.push("<title>طباعة الوثيقة</title>");
-
-      document.querySelectorAll('link[rel="stylesheet"], link[rel="preconnect"]').forEach(function (link) {
-        const clone = link.cloneNode(true);
-        if (clone.getAttribute("rel") === "stylesheet") {
-          const href = clone.getAttribute("href");
-          if (href) {
-            const separator = href.includes("?") ? "&" : "?";
-            clone.setAttribute("href", `${href}${separator}print_copy=${Date.now()}`);
-          }
-        }
-        headParts.push(clone.outerHTML);
-      });
-
-      document.querySelectorAll("style").forEach(function (styleTag) {
-        headParts.push(styleTag.outerHTML);
-      });
-
-      headParts.push(`
-        <style>
-          @page { size: A4; margin: 0; }
-          html, body { margin: 0; padding: 0; background: #fff; }
-          .a4-page {
-            width: 210mm !important;
-            min-height: 297mm !important;
-            margin: 0 auto;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            padding: 11mm 13mm 9mm !important;
-            overflow: hidden;
-            position: static !important;
-            transform: none !important;
-            box-shadow: none !important;
-            border: none !important;
-          }
-          .toolbar { display: none !important; }
-          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        </style>
-      `);
-
-      win.document.open();
-      win.document.write(`
-        <!doctype html>
-        <html dir="rtl" lang="ar">
-          <head>${headParts.join("\n")}</head>
-          <body>${html}</body>
-        </html>
-      `);
-      win.document.close();
-
-      const triggerPrint = function () {
-        win.focus();
-        win.print();
-        win.close();
-      };
-
-      if (win.document.readyState === "complete") {
-        window.setTimeout(triggerPrint, 300);
-      } else {
-        win.onload = function () {
-          window.setTimeout(triggerPrint, 300);
-        };
-      }
+      window.print();
     },
 
     bindActions() {
+      const pdfBtn = App.dom.byId("downloadPdfBtn");
+      if (pdfBtn) {
+        pdfBtn.addEventListener("click", () => this.downloadPdf());
+      }
+
       const imageBtn = App.dom.byId("downloadImageBtn");
       if (imageBtn) {
         imageBtn.addEventListener("click", () => void this.downloadImage());
