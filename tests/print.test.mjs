@@ -37,3 +37,19 @@ test("ledger PDF prints the desktop table across pages with repeating headers", 
   assert.match(css, /#tradersPage \.mobile-ledger-cards/);
   assert.match(css, /#tradersPage \.ledger-print-card/);
 });
+
+test("QR follows variable-height products table without absolute positioning or extra padding", () => {
+  const html = read("document.html");
+  const css = read("css/print-document.css");
+  assert.match(html, /class="doc-grid items-table" id="itemsTable"/);
+  assert.match(html, /class="verification-tail" id="verificationTail"/);
+  assert.match(html, /class="qr-notes" id="qrNotes"/);
+  assert.match(html, /https:\/\/ur\.gov\.iq\//);
+  assert.match(css, /--document-table-to-qr:\s*2\.518mm;/);
+  assert.match(css, /--document-qr-to-notes:\s*1\.150mm;/);
+  assert.match(css, /--document-qr-width:\s*33\.425544mm;/);
+  assert.match(css, /--document-qr-height:\s*33\.196596mm;/);
+  assert.match(css, /#documentPage \.qr-zone\s*\{[\s\S]*?padding:\s*0 !important;/);
+  assert.match(css, /#documentPage \.qr-notes\s*\{[\s\S]*?margin:\s*var\(--document-qr-to-notes\) 0 0 !important;/);
+  assert.match(css, /#documentPage \.verification-tail\s*\{[\s\S]*?margin:\s*var\(--document-table-to-qr\) 0 0 !important;/);
+});
