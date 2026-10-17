@@ -227,3 +227,79 @@
     padding: 0 !important;
   }
 }
+
+/*
+ * The entire document uses natural block flow on screen.
+ * style.css has historical A4 flex and overflow overrides: both can break
+ * the relationship between long table rows and the QR.
+ */
+#documentPage.a4-page {
+  display: block !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  gap: 0 !important;
+}
+#documentPage .document-end-block,
+#documentPage .doc-grid.items-table,
+#documentPage .verification-tail,
+#documentPage .qr-zone,
+#documentPage .qr-notes {
+  float: none !important;
+  clear: none !important;
+  inset: auto !important;
+  transform: none !important;
+}
+
+/* Natural stacking:
+ * [last table edge] + 2.518 mm + [QR image] + 1.150 mm + [notes].
+ * Measurements are attached to the real table height, not an A4 Y coordinate.
+ */
+#documentPage .doc-grid.items-table {
+  position: static !important;
+  float: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+#documentPage .doc-grid.items-table td,
+#documentPage .doc-grid.items-table th {
+  height: auto;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+#documentPage .document-end-block {
+  position: static !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+#documentPage .verification-tail {
+  top: auto !important;
+  bottom: auto !important;
+  margin-top: var(--document-table-to-qr) !important;
+}
+#documentPage .qr-notes {
+  top: auto !important;
+  bottom: auto !important;
+  margin-top: var(--document-qr-to-notes) !important;
+}
+@media print {
+  #documentPage.a4-page { display: block !important; overflow: visible !important; }
+  /* Allow oversized product tables to continue over pages, while keeping
+   * QR+notes together and the last row joined to the QR where supported. */
+  #documentPage .document-end-block {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+  #documentPage .verification-tail {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-before: avoid !important;
+    break-before: avoid-page !important;
+  }
+  #documentPage .doc-grid.items-table tr:last-child {
+    page-break-after: avoid !important;
+    break-after: avoid-page !important;
+  }
+}
