@@ -53,3 +53,18 @@ test("QR follows variable-height products table without absolute positioning or 
   assert.match(css, /#documentPage \.qr-notes\s*\{[\s\S]*?margin:\s*var\(--document-qr-to-notes\) 0 0 !important;/);
   assert.match(css, /#documentPage \.verification-tail\s*\{[\s\S]*?margin:\s*var\(--document-table-to-qr\) 0 0 !important;/);
 });
+
+test("long shipment descriptions push QR down through natural flow with exact gaps", () => {
+  const page = read("document.html");
+  const css = read("css/print-document.css");
+  const wrapper = page.indexOf('class="document-end-block" id="documentEndBlock"');
+  const table = page.indexOf('class="doc-grid items-table" id="itemsTable"');
+  const tail = page.indexOf('class="verification-tail" id="verificationTail"');
+  const notes = page.indexOf('class="qr-notes" id="qrNotes"');
+  assert.ok(wrapper >= 0 && wrapper < table && table < tail && tail < notes);
+  assert.match(css, /#documentPage\.a4-page\s*\{[\s\S]*?display: block !important;/);
+  assert.match(css, /#documentPage \.doc-grid\.items-table\s*\{[\s\S]*?height: auto !important;/);
+  assert.match(css, /#documentPage \.verification-tail\s*\{[\s\S]*?margin-top: var\(--document-table-to-qr\) !important;/);
+  assert.match(css, /#documentPage \.qr-notes\s*\{[\s\S]*?margin-top: var\(--document-qr-to-notes\) !important;/);
+  assert.match(css, /#documentPage \.verification-tail\s*\{[\s\S]*?break-before: avoid-page !important;/);
+});
