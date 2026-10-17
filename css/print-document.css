@@ -102,3 +102,128 @@
     print-color-adjust: exact !important;
   }
 }
+
+/*
+ * Dynamic QR-to-table spacing (PDF-source measurements).
+ * Keep the products table, QR, and notes in normal document flow.
+ * No absolute QR top and no JavaScript pixel offsets.
+ */
+:root {
+  --document-table-to-qr: 2.518mm;
+  --document-qr-to-notes: 1.150mm;
+  --document-qr-width: 33.425544mm;
+  --document-qr-height: 33.196596mm;
+}
+
+#documentPage .document-end-block {
+  display: flow-root;
+  width: 100%;
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+}
+
+#documentPage .doc-grid.items-table {
+  margin-bottom: 0 !important;
+  width: 100%;
+}
+
+#documentPage .verification-tail {
+  margin: var(--document-table-to-qr) 0 0 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: static !important;
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+}
+
+#documentPage .qr-zone {
+  display: block;
+  flex: none;
+  width: var(--document-qr-width);
+  height: var(--document-qr-height);
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 0;
+  font-size: 0;
+  position: static !important;
+}
+
+#documentPage .qr-zone .barcode-img,
+#documentPage .qr-zone .qr-empty {
+  display: block;
+  box-sizing: border-box;
+  width: var(--document-qr-width) !important;
+  height: var(--document-qr-height) !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: fill;
+}
+
+#documentPage .qr-zone .qr-empty {
+  border: 0.229mm dashed #a0a0a0;
+  background: #f9f9f9;
+}
+
+#documentPage .qr-notes {
+  display: block;
+  position: static !important;
+  flex: none;
+  width: 100%;
+  margin: var(--document-qr-to-notes) 0 0 !important;
+  padding: 0 !important;
+  text-align: center;
+  direction: rtl;
+  font-size: 7.788pt;
+  line-height: 4.350mm;
+  color: #6b7280;
+}
+
+#documentPage .qr-notes p {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: inherit;
+}
+
+#documentPage .qr-notes p:first-child { color: #111827; }
+#documentPage .qr-notes a {
+  display: block;
+  color: #0d6efd;
+  font-weight: 700;
+  font-size: 10.384pt;
+  line-height: 6.865mm;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+@media print {
+  /* Cancel old 4mm bottom table margin and 3mm QR padding. */
+  #documentPage .doc-grid.items-table {
+    margin-top: 2mm !important;
+    margin-bottom: 0 !important;
+  }
+
+  #documentPage .document-end-block,
+  #documentPage .verification-tail {
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+  }
+
+  #documentPage .doc-grid.items-table tr:last-child {
+    break-after: avoid-page !important;
+    page-break-after: avoid !important;
+  }
+
+  #documentPage .verification-tail {
+    break-before: avoid-page !important;
+    page-break-before: avoid !important;
+  }
+
+  #documentPage .qr-zone {
+    padding: 0 !important;
+  }
+}
