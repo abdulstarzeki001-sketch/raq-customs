@@ -9,7 +9,8 @@ jobs:
   package:
     runs-on: ubuntu-latest
     env:
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || 'd2680f7c5ff39f8d9177a51dbf7fec75' }}
+      # Explicit project account ID supplied by the owner (do not silently override with a stale secret).
+      CLOUDFLARE_ACCOUNT_ID: d45cb55f3d7654fc0eee90ca0e844378
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_PAGES_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4

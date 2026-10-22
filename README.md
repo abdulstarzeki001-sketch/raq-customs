@@ -61,3 +61,7 @@ After the secret is set, choose Actions → **Publish recovered frontend to Clou
 3. راجع `CLOUDFLARE_ACCOUNT_ID` إذا كنت تعمل على حساب Cloudflare آخر. ثم نفّذ `Publish recovered frontend to Cloudflare Pages` يدوياً من الفرع `main`.
 
 **لا ترسل التوكن في المحادثة أو تحفظه داخل المستودع.** إعداد الصلاحيات يتم من Cloudflare/GitHub، ولا تستطيع ملفات المشروع إصلاح توكن مرفوض. النشر يستبدل الواجهة الحالية؛ احتفظ بنسخة احتياطية من البيانات والخدمات الأصلية قبل استخدام النسخة المسترجعة.
+
+### Cloudflare Account ID (2026-10-22)
+
+User-supplied Cloudflare Account ID: `d45cb55f3d7654fc0eee90ca0e844378`. Both GitHub Actions Pages deployment workflows use this account explicitly to avoid an outdated `CLOUDFLARE_ACCOUNT_ID` secret. The preflight fails safely if the `iraq-customs` project cannot be accessed in that account. R2 S3 Access Key ID, Secret Access Key, and S3 endpoint **cannot** authenticate Cloudflare Pages deployment. Generate a separate Cloudflare API token with **Account > Cloudflare Pages > Edit** permissions for this account; save only in GitHub Actions repository secret `CLOUDFLARE_PAGES_TOKEN`. Do not commit credentials.
