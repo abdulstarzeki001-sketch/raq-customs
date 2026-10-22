@@ -48,3 +48,6 @@ GitHub Actions first validates four restored HTML pages, related assets and 839 
 **Set up once:** GitHub repository → Settings → Secrets and variables → Actions → New repository secret → Name: `CLOUDFLARE_API_TOKEN`. Value: a token created under Cloudflare → My Profile → API Tokens with `Account > Cloudflare Pages > Edit` permission for the project account. Never commit or send the secret in messages.
 
 After the secret is set, choose Actions → **Publish recovered frontend to Cloudflare Pages** → **Run workflow**, or push any new commit to `main`. A successful packaging job with an explicit `NOT DEPLOYED` warning means no Cloudflare publish occurred.
+
+## مطابقة الواجهة مع الملفات المرجعية (2026-10-22)
+تم إعداد فرع مراجعة يكيّف معاينة وثيقة الحمولة وصفحة بحث الشركات وفق مكونات Vue المجمّعة المرفقة، دون نسخ بيانات الجلسة أو استبدال المشروع المحلي بمنظومة رسمية غير مكتملة. التفاصيل وحدود المطابقة في [SOURCE_ALIGNMENT_AR.md](SOURCE_ALIGNMENT_AR.md). **لا تُدمج التعديلات في الإنتاج قبل اختبار المعاينة والطباعة.**
