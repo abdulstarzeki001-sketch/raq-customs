@@ -1,49 +1,109 @@
 <!doctype html>
-<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>عرض الوثيقة — نسخة محلية</title><link rel="icon" href="./images/site-mark.svg"><link rel="stylesheet" href="./css/style.css">
-<style>body{font-family:Tahoma,Arial,sans-serif;background:#f3f6f8;margin:0;color:#1d2733} .toolbar{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;padding:16px;background:#fff;border-bottom:1px solid #ddd} .toolbar a,.toolbar button{background:#0c4349;color:white;border:0;border-radius:8px;padding:10px 15px;text-decoration:none;cursor:pointer;font:inherit} .a4-page{background:white;width:min(210mm,calc(100% - 24px));min-height:275mm;margin:22px auto 40px;padding:13mm;box-sizing:border-box;box-shadow:0 6px 30px #20304021}.a4-page h1,.a4-page h2{text-align:center;color:#0c4349}.badge-internal{padding:9px 14px;margin:10px 0;background:#fff3cd;color:#624500;border-radius:7px;text-align:center}.doc-grid{width:100%;border-collapse:collapse;margin:14px 0}.doc-grid th,.doc-grid td{border:1px solid #abb9bf;padding:9px;text-align:right;vertical-align:top;overflow-wrap:anywhere}.doc-grid th{background:#edf3f4;width:35%}.doc-grid .section th{background:#0c4349;color:#fff}.barcode-img{max-width:180px;max-height:180px;object-fit:contain}.qr-zone{text-align:center;padding:20px}@media print{@page{size:A4;margin:8mm}body{background:white}.toolbar,.badge-internal{display:none!important}.a4-page{margin:0;box-shadow:none;padding:0;width:100%;min-height:auto}}</style>
-<link rel="stylesheet" href="./css/print-document.css">
-<script src="./js/vendor/html2canvas.min.js" defer></script></head>
-<body>
-<div class="toolbar"><a href="./index.html">الرئيسية</a><a href="./form.html">رجوع للتعبئة</a><a href="./traders.html">كشف الحساب</a><button type="button" id="refreshBtn">تحديث الوثيقة</button><button type="button" id="downloadImageBtn">تنزيل صورة</button><button type="button" id="downloadPdfBtn">طباعة / حفظ PDF</button></div>
-<main class="a4-page" id="documentPage">
-<div class="badge-internal">نسخة محلية مسترجعة للمعاينة — ليست وثيقة رسمية أو إثبات تحقق حكومي</div>
-<h1>سجل معلومات الحمولة</h1><h2>الوثيقة المؤقتة لبيانات الحمولة</h2>
-<table class="doc-grid"><tbody>
-<tr class="section"><th colspan="2">معلومات الوثيقة</th></tr>
-<tr><th>رقم الوثيقة</th><td data-out="doc_id"></td></tr>
-<tr><th>تاريخ الوثيقة</th><td data-out="date_str"></td></tr>
-<tr><th>الوقت</th><td data-out="time_str"></td></tr>
-<tr><th>الموضوع</th><td data-out="subject"></td></tr>
-<tr class="section"><th colspan="2">معلومات السائق والحمولة</th></tr>
-<tr><th>سيطرة الدخول</th><td data-out="checkpoint_name_control"></td></tr>
-<tr><th>اسم السائق</th><td data-out="driver_name"></td></tr>
-<tr><th>رقم العجلة</th><td data-out="vehicle_number"></td></tr>
-<tr><th>محافظة تسجيل العجلة</th><td data-out="registration_governorate"></td></tr>
-<tr><th>نوع / تفاصيل الحمولة</th><td data-out="cargo_typedetails"></td></tr>
-<tr><th>الوزن / الكمية</th><td data-out="weight_quantity"></td></tr>
-<tr><th>الوجهة النهائية</th><td data-out="destination_governorate"></td></tr>
-<tr class="section"><th colspan="2">معلومات الشركة والإجازة</th></tr>
-<tr><th>المحافظة</th><td data-out="governorate_name"></td></tr>
-<tr><th>اسم الشركة / المشروع</th><td data-out="company_name_project"></td></tr>
-<tr><th>الجهة المانحة للإجازة</th><td data-out="granting_license_approval"></td></tr>
-<tr><th>رقم الإجازة</th><td data-out="license_approval_number"></td></tr>
-<tr><th>تاريخ الإجازة</th><td data-out="license_approval_date"></td></tr>
-<tr><th>الاختصاص</th><td data-out="license_text_specialization"></td></tr>
-<tr><th>العلامة التجارية</th><td data-out="brand"></td></tr>
-</tbody></table>
-<div class="document-end-block" id="documentEndBlock">
-<table class="doc-grid items-table" id="itemsTable"><thead><tr class="section"><th colspan="2" id="itemsHeader">المنتجات المرخصة</th></tr><tr><th>المادة / المنتج</th><th>الطاقة / الكمية</th></tr></thead><tbody id="itemsBody"></tbody></table>
-<section class="verification-tail" id="verificationTail" aria-label="رمز QR والملاحظات">
-  <div class="qr-zone" id="qrArea"></div>
-  <div class="qr-notes" id="qrNotes">
-    <p>احتفاظك بهذه الوثيقة يمكّنك من استخدامها لدى الجهات المرتبطة بالنظام.</p>
-    <p>يمكنك حفظ صورة الوثيقة في الهاتف لاستخدامها عند الحاجة.</p>
-    <p>لمزيد من المعلومات عن الخدمات الحكومية الإلكترونية يمكن زيارة:</p>
-    <a href="https://ur.gov.iq/" target="_blank" rel="noopener noreferrer">https://ur.gov.iq/</a>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>معاينة وثيقة الحمولة — بوابة أصحاب الشركات</title>
+  <link rel="icon" href="./images/site-mark.svg">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/print-document.css">
+  <link rel="stylesheet" href="./css/document-source.css">
+  <script src="./js/vendor/html2canvas.min.js" defer></script>
+</head>
+<body class="document-body">
+  <nav class="toolbar" aria-label="إجراءات الوثيقة">
+    <a href="./index.html">بحث الشركات</a>
+    <a href="./form.html">رجوع للتعبئة</a>
+    <a href="./traders.html">كشف الحساب</a>
+    <button type="button" id="refreshBtn">تحديث الوثيقة</button>
+    <button type="button" id="downloadImageBtn">تنزيل صورة</button>
+    <button type="button" id="downloadPdfBtn">طباعة / حفظ PDF</button>
+  </nav>
+
+  <div class="doc-viewport">
+    <main class="a4-page shipment-document" id="documentPage" aria-label="معاينة وثيقة الحمولة">
+      <div class="badge-internal" id="localOnlyNotice">
+        معاينة محلية مسترجعة — ليست وثيقة رسمية أو مصدّقة ولا تصلح لإثبات الترخيص أو التخليص الجمركي.
+      </div>
+
+      <header class="header-clean">
+        <div class="header-right">
+          <div class="office-lines">
+            <div>جمهورية العراق</div>
+            <div>وزارة المالية</div>
+            <div>الهيئة العامة للكمارك</div>
+            <small>نموذج محلي غير رسمي</small>
+          </div>
+        </div>
+        <div class="header-center logo-wrap">
+          <img class="center-logo" src="./images/site-mark.svg" alt="علامة توضيحية للنسخة المحلية، وليست ختم اعتماد">
+        </div>
+        <div class="header-left">
+          <div class="doc-meta">
+            <div class="meta-line"><span class="meta-label">رقم الوثيقة:</span><span class="meta-value" data-out="doc_id"></span></div>
+            <div class="meta-line"><span class="meta-label">التاريخ:</span><span class="meta-value" data-out="date_str"></span></div>
+            <div class="meta-line"><span class="meta-label">الوقت:</span><span class="meta-value" data-out="time_str"></span></div>
+          </div>
+        </div>
+      </header>
+
+      <div class="divider" aria-hidden="true"></div>
+      <h1 class="doc-title">الوثيقة المؤقتة لبيانات الحمولة من قبل الشركة</h1>
+      <div class="subject-row"><strong>الموضوع:</strong><span class="subject-field" data-out="subject"></span></div>
+
+      <section class="content" aria-label="بيانات الوثيقة">
+        <table class="doc-grid info-table">
+          <tbody>
+            <tr class="section"><th colspan="2" class="info-header">معلومات الشركة والإجازة</th></tr>
+            <tr><th scope="row">المحافظة</th><td data-out="governorate_name"></td></tr>
+            <tr><th scope="row">اسم الشركة / المشروع</th><td data-out="company_name_project"></td></tr>
+            <tr><th scope="row">الجهة المانحة للإجازة</th><td data-out="granting_license_approval"></td></tr>
+            <tr><th scope="row">رقم الإجازة / الموافقة</th><td data-out="license_approval_number"></td></tr>
+            <tr><th scope="row">تاريخ الإجازة / الموافقة</th><td data-out="license_approval_date"></td></tr>
+            <tr><th scope="row">الاختصاص</th><td data-out="license_text_specialization"></td></tr>
+            <tr><th scope="row">العلامة التجارية</th><td data-out="brand"></td></tr>
+            <tr class="section"><th colspan="2" class="info-header">معلومات السائق والعجلة والحمولة</th></tr>
+            <tr><th scope="row">سيطرة الدخول</th><td data-out="checkpoint_name_control"></td></tr>
+            <tr><th scope="row">اسم السائق</th><td data-out="driver_name"></td></tr>
+            <tr><th scope="row">رقم العجلة</th><td data-out="vehicle_number"></td></tr>
+            <tr><th scope="row">محافظة تسجيل العجلة</th><td data-out="registration_governorate"></td></tr>
+            <tr><th scope="row">نوع / تفاصيل الحمولة</th><td data-out="cargo_typedetails"></td></tr>
+            <tr><th scope="row">الوزن / الكمية</th><td data-out="weight_quantity"></td></tr>
+            <tr><th scope="row">الوجهة النهائية / المحافظة</th><td data-out="destination_governorate"></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="document-end-block" id="documentEndBlock">
+        <table class="doc-grid items-table" id="itemsTable">
+          <thead>
+            <tr class="section"><th colspan="2" id="itemsHeader">المنتجات المرخصة</th></tr>
+            <tr><th scope="col">المادة / المنتج</th><th scope="col">الطاقة / الكمية والوحدة</th></tr>
+          </thead>
+          <tbody id="itemsBody"></tbody>
+        </table>
+        <section class="verification-tail" id="verificationTail" aria-label="رمز QR والملاحظات">
+          <div class="qr-zone" id="qrArea"></div>
+          <div class="qr-notes" id="qrNotes">
+            <p>احتفظ بنسخة من بيانات الوثيقة للرجوع إليها عند الحاجة.</p>
+            <p>رمز QR المعروض يأتي من بيانات الإدخال المحلية ولا يشكل تحققاً حكومياً.</p>
+            <p>للمعلومات عن الخدمات الحكومية الإلكترونية:</p>
+            <a href="https://ur.gov.iq/" target="_blank" rel="noopener noreferrer">https://ur.gov.iq/</a>
+          </div>
+        </section>
+      </div>
+
+      <footer class="doc-footer">
+        <div class="footer-right"><strong>بوابة أصحاب الشركات</strong><div>نسخة محلية للمعاينة فقط</div></div>
+        <div class="footer-center">لا توجد مصادقة حكومية أو توقيع إلكتروني أو اتصال بخدمات التحقق الرسمية.</div>
+        <div class="footer-left"><img src="./images/site-mark.svg" alt="علامة النسخة المحلية"></div>
+      </footer>
+    </main>
   </div>
-</section>
-</div>
-<p style="font-size:12px;text-align:center;color:#555">هذه معاينة محلية للبيانات المُدخلة وليست وثيقة صادرة أو مصدّقة من جهة حكومية.</p>
-</main>
-<script src="./js/core.js"></script><script src="./js/storage.js"></script><script src="./js/sync.js"></script><script src="./js/document-page.js"></script><script src="./js/app.js"></script></body></html>
+  <script src="./js/core.js"></script>
+  <script src="./js/storage.js"></script>
+  <script src="./js/sync.js"></script>
+  <script src="./js/document-page.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

@@ -47,11 +47,11 @@ window.App = window.App || {};
         results.innerHTML = list.map((company) => {
           const normalized = App.companies.normalize(company);
           return `
-            <div class="company-result-row" data-number="${App.utils.safeText(normalized.Number)}">
+            <button type="button" class="company-result-row" data-number="${App.utils.safeText(normalized.Number)}">
               <span class="company-result-code">رقم الشركة: ${App.utils.safeText(normalized.Number)}</span>
               <span class="company-result-name">${App.utils.safeText(normalized.CompanyNameProject)}</span>
               <span class="company-result-meta">الإجازة: ${App.utils.safeText(normalized.LicenseApprovalNumber)} — المحافظة: ${App.utils.safeText(normalized.GovernorateName)} — العلامة: ${App.utils.safeText(normalized.Brand)}</span>
-            </div>
+            </button>
           `;
         }).join("");
 
