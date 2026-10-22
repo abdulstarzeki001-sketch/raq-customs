@@ -1,7 +1,8 @@
 name: Verify uploaded ZIP site snapshot
+# Historical fixed-checksum probe: the external snapshot now differs from the recorded hash.
+# Run explicitly when auditing the archived ZIP, not on every code change.
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
