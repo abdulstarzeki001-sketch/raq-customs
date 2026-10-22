@@ -41,6 +41,7 @@ for (const workflow of ["deploy-pages.yml", "package-deploy.yml"]) {
   test(`${workflow} verifies Cloudflare access before publishing`, () => {
     const yaml = readFileSync(`.github/workflows/${workflow}`, "utf8");
     assert.match(yaml, /secrets\.CLOUDFLARE_PAGES_TOKEN \|\| secrets\.CLOUDFLARE_API_TOKEN/);
+    assert.match(yaml, /CLOUDFLARE_ACCOUNT_ID: d45cb55f3d7654fc0eee90ca0e844378/);
     const verify = yaml.indexOf("run: node scripts/check-cloudflare-pages.mjs");
     const deploy = yaml.indexOf("wrangler@4 pages deploy");
     assert.ok(verify > 0 && deploy > verify);
