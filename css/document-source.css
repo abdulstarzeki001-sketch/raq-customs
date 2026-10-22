@@ -1,0 +1,158 @@
+/*
+ * Source-aligned shipment document.
+ * Visual structure adapted from the supplied Vue ShipmentDoc CSS/markup:
+ * three-part header, metadata, red section headings, product rows, QR and footer.
+ * This is a LOCAL preview, not a government-issued document.
+ */
+.document-body {
+  margin: 0;
+  background: #f3f4f6;
+  color: #111827;
+  font-family: "Cairo", Tahoma, Arial, sans-serif;
+}
+.document-body .toolbar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .6rem;
+  padding: 1rem;
+  background: #fff;
+  border-bottom: 1px solid #d1d5db;
+}
+.document-body .toolbar a,
+.document-body .toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #14575b;
+  border: 0;
+  border-radius: .5rem;
+  padding: .65rem .9rem;
+  color: #fff;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.document-body .toolbar a:focus-visible,
+.document-body .toolbar button:focus-visible { outline: 3px solid #eab308; outline-offset: 2px; }
+.document-body .doc-viewport { padding: 2rem 1rem; min-height: 100vh; }
+#documentPage.shipment-document.a4-page {
+  display: block !important;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 210mm;
+  min-height: 297mm;
+  height: auto !important;
+  margin: 0 auto;
+  padding: 8mm;
+  overflow: visible !important;
+  background: #fff;
+  color: #111827;
+  border: 1px solid #d4cece;
+  box-shadow: 0 8px 26px #0f172a14;
+}
+#documentPage .badge-internal {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border: 1px solid #e6b95d;
+  border-radius: 6px;
+  background: #fff7df;
+  color: #6b4514;
+  font-size: .78rem;
+  line-height: 1.6;
+  text-align: center;
+}
+#documentPage .header-clean {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 126px minmax(0,1fr);
+  gap: 8px;
+  align-items: center;
+  padding: 4px 0;
+}
+#documentPage .header-right { text-align: right; }
+#documentPage .header-left { min-width: 0; }
+#documentPage .office-lines { line-height: 1.65; font-weight: 700; font-size: .84rem; }
+#documentPage .office-lines small { display: block; font-size: .7rem; font-weight: 500; color: #7f1d1d; }
+#documentPage .header-center { display: flex; justify-content: center; }
+#documentPage .center-logo {
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+  padding: 7px;
+  background: #fff;
+}
+#documentPage .doc-meta { display: flex; flex-direction: column; gap: 6px; }
+#documentPage .meta-line { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
+#documentPage .meta-label { font-weight: 700; white-space: nowrap; font-size: .78rem; }
+#documentPage .meta-value { direction: ltr; text-align: left; overflow-wrap: anywhere; font-size: .78rem; }
+#documentPage .divider { border-top: 1px solid #d1d5db; margin: 8px 0 12px; }
+#documentPage .doc-title { margin: 6px 0 12px; font-size: 1.2rem; text-align: center; color: #111827; }
+#documentPage .subject-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px; }
+#documentPage .subject-field { flex: 1; min-width: 170px; padding: 7px 10px; background: #f6f6f6; border-radius: 6px; font-weight: 600; overflow-wrap: anywhere; }
+#documentPage .doc-grid {
+  width: 100%;
+  margin: 10px 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+#documentPage .doc-grid th,
+#documentPage .doc-grid td {
+  border: 1px solid #b7b7b7;
+  padding: 5px 7px;
+  font-size: .86rem;
+  line-height: 1.55;
+  text-align: right;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+#documentPage .doc-grid th { width: 38%; background: #f8fafc; font-weight: 700; }
+#documentPage .doc-grid .section th { width: auto; background: #990707 !important; color: #fff !important; text-align: center; }
+#documentPage .doc-grid.items-table th { width: 50%; }
+#documentPage .doc-grid.items-table td { width: 50%; }
+#documentPage .doc-footer {
+  margin-top: 18px;
+  padding-top: 9px;
+  border-top: 1px solid #b7b7b7;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  color: #4b5563;
+  font-size: .73rem;
+}
+#documentPage .footer-right { min-width: 125px; }
+#documentPage .footer-center { max-width: 280px; text-align: center; }
+#documentPage .footer-left img { width: 60px; height: 52px; object-fit: contain; }
+@media screen and (max-width: 640px) {
+  .document-body .doc-viewport { padding: 12px 6px; }
+  #documentPage.shipment-document.a4-page { min-height: 0; padding: 14px; }
+  #documentPage .header-clean { display: flex; flex-direction: column; gap: 12px; text-align: center; }
+  #documentPage .header-right { text-align: center; }
+  #documentPage .header-left { width: 100%; }
+  #documentPage .center-logo { width: 82px; height: 82px; }
+  #documentPage .doc-meta { width: 100%; }
+  #documentPage .doc-grid th, #documentPage .doc-grid td { font-size: .75rem; padding: 4px; }
+  #documentPage .doc-footer { flex-direction: column; text-align: center; }
+}
+@media print {
+  .document-body .toolbar { display: none !important; }
+  .document-body .doc-viewport { padding: 0 !important; min-height: 0 !important; background: #fff !important; }
+  #documentPage.shipment-document.a4-page {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+  #documentPage .header-clean { display: grid !important; grid-template-columns: minmax(0,1fr) 32mm minmax(0,1fr) !important; }
+  #documentPage .doc-grid .section th { background: #990707 !important; color: #fff !important; }
+  #documentPage .doc-grid.items-table { margin-bottom: 0 !important; }
+  #documentPage .doc-footer { break-inside: avoid; page-break-inside: avoid; }
+  #documentPage .badge-internal { display: block !important; }
+}
