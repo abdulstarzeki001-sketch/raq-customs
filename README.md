@@ -51,3 +51,13 @@ After the secret is set, choose Actions → **Publish recovered frontend to Clou
 
 ## مطابقة الواجهة مع الملفات المرجعية (2026-10-22)
 تم إعداد فرع مراجعة يكيّف معاينة وثيقة الحمولة وصفحة بحث الشركات وفق مكونات Vue المجمّعة المرفقة، دون نسخ بيانات الجلسة أو استبدال المشروع المحلي بمنظومة رسمية غير مكتملة. التفاصيل وحدود المطابقة في [SOURCE_ALIGNMENT_AR.md](SOURCE_ALIGNMENT_AR.md). **لا تُدمج التعديلات في الإنتاج قبل اختبار المعاينة والطباعة.**
+
+### تشخيص صلاحيات Cloudflare (2026-10-22)
+
+في حال ظهر `Authentication error [code: 10000]` فالمفتاح موجود لكنه لا يملك صلاحية الوصول إلى مشروع Pages بالحساب المحدد، أو الحساب/المشروع مختلف. فحص `scripts/check-cloudflare-pages.mjs` يتحقق من المشروع **قبل** رفع الملفات ويكتب سبب المنع في سجل Actions دون طباعة التوكن.
+
+1. من Cloudflare → **Account API Tokens** أنشئ Custom Token مع **Account → Cloudflare Pages → Edit**، وحدد في **Account Resources** الحساب الذي يحتوي على مشروع `iraq-customs`.
+2. حدّث أحد أسرار **Repository secrets** في GitHub: الاسم المفضل `CLOUDFLARE_PAGES_TOKEN` (أو `CLOUDFLARE_API_TOKEN`). إذا وُجد الاثنان، يُستخدم `CLOUDFLARE_PAGES_TOKEN` أولاً.
+3. راجع `CLOUDFLARE_ACCOUNT_ID` إذا كنت تعمل على حساب Cloudflare آخر. ثم نفّذ `Publish recovered frontend to Cloudflare Pages` يدوياً من الفرع `main`.
+
+**لا ترسل التوكن في المحادثة أو تحفظه داخل المستودع.** إعداد الصلاحيات يتم من Cloudflare/GitHub، ولا تستطيع ملفات المشروع إصلاح توكن مرفوض. النشر يستبدل الواجهة الحالية؛ احتفظ بنسخة احتياطية من البيانات والخدمات الأصلية قبل استخدام النسخة المسترجعة.
